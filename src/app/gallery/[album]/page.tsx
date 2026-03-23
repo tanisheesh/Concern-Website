@@ -34,6 +34,8 @@ const albums: { [key: string]: { title: string; hint: string } } = {
   'concern-premises': { title: 'Concern Premises', hint: 'office building' },
   'awareness-programmes': { title: 'Awareness Programmes', hint: 'community event' },
   'award-recognitions': { title: 'Awards & Recognitions', hint: 'award ceremony' },
+  'sanctuary': { title: 'Sanctuary', hint: 'sanctuary home' },
+  '2026': { title: '2026', hint: 'event' },
   '2025': { title: '2025', hint: 'future event' },
   '2024': { title: '2024', hint: 'event' },
   '2023': { title: '2023', hint: 'celebration' },

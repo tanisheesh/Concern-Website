@@ -84,7 +84,7 @@ export default function MosjePage() {
         </div>
         <div className="mt-10 text-center">
           <p className="text-xl font-bold text-primary">
-            Kindly visit <Link href="/gallery" className="underline text-accent-foreground hover:text-accent transition-colors">Gallery</Link> for more activities of MoSJE.
+            Kindly visit <Link href="/gallery/ministry-of-social-justice-and-empowerment" className="underline text-accent-foreground hover:text-accent transition-colors">Gallery</Link> for more activities of MoSJE.
           </p>
         </div>
       </div>

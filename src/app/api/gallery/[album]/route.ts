@@ -69,6 +69,7 @@ function slugToTitle(slug: string): string {
     'awareness-programmes': 'Awareness Programmes',
     'award-recognitions': 'Awards & Recognitions', // Updated to match new folder name
     'awards-recognitions': 'Awards & Recognitions', // Alternative slug mapping
+    'sanctuary': 'Sanctuary',
   };
 
   // Check if we have a specific mapping

@@ -12,7 +12,8 @@ import {
   Megaphone, 
   Award, 
   CalendarDays,
-  Video
+  Video,
+  HeartHandshake
 } from 'lucide-react';
 import type { Metadata } from 'next';
 import { motion } from 'framer-motion';
@@ -39,6 +40,7 @@ const programmeIconMap: { [key: string]: React.ElementType } = {
   'concern-premises': Building2,
   'awareness-programmes': Megaphone,
   'award-recognitions': Award,
+  'sanctuary': HeartHandshake,
 };
 
 // Simplified type for albums
@@ -85,9 +87,13 @@ const staticProgrammeAlbums: Album[] = [
     { slug: 'award-recognitions', title: 'Awards & Recognitions' },
 ];
 
-const videoClipsAlbum: Album = { slug: 'video-clips', title: 'Video Clips' };
+const specialAlbums: Album[] = [
+    { slug: 'video-clips', title: 'Video Clips' },
+    { slug: 'sanctuary', title: 'Sanctuary' },
+];
 
 const staticYearAlbums: Album[] = [
+    { "slug": "2026", "title": "2026" },
     { "slug": "2025", "title": "2025" },
     { "slug": "2024", "title": "2024" },
     { "slug": "2023", "title": "2023" },
@@ -156,25 +162,30 @@ export default function GalleryPage() {
           })}
         </motion.div>
 
-        {/* Video Clips - Centered in its own row */}
-        <motion.div 
-            className="mt-6 flex justify-center"
+        {/* Video Clips + Sanctuary — centered pair on desktop, normal grid on mobile */}
+        <motion.div
+            className="mt-6 grid grid-cols-2 gap-4 md:flex md:justify-center md:gap-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
-            <motion.div variants={itemVariants} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3">
-                <Link href={`/gallery/${videoClipsAlbum.slug}`} className="group">
-                    <Card className="flex h-full transform flex-col items-center justify-center text-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl">
-                        <CardHeader>
-                            <Video className="mx-auto h-10 w-10 text-primary transition-colors duration-300 group-hover:text-accent md:h-12 md:w-12" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="font-semibold text-sm md:text-base">{videoClipsAlbum.title}</p>
-                        </CardContent>
-                    </Card>
-                </Link>
-            </motion.div>
+            {specialAlbums.map((album) => {
+                const IconComponent = programmeIconMap[album.slug] || Users;
+                return (
+                    <motion.div key={album.slug} variants={itemVariants} className="md:w-1/3">
+                        <Link href={`/gallery/${album.slug}`} className="group">
+                            <Card className="flex h-full transform flex-col items-center justify-center text-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl">
+                                <CardHeader>
+                                    <IconComponent className="mx-auto h-10 w-10 text-primary transition-colors duration-300 group-hover:text-accent md:h-12 md:w-12" />
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="font-semibold text-sm md:text-base">{album.title}</p>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    </motion.div>
+                );
+            })}
         </motion.div>
       </section>
 

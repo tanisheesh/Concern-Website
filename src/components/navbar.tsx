@@ -18,6 +18,7 @@ const navLinks = [
   { href: '/therapy', label: 'Therapy' },
   { href: '/training', label: 'Training' },
   { href: '/mosje', label: 'MoSJE', highlight: true },
+  { href: '/sanctuary', label: 'Sanctuary' },
 ];
 
 export default function Navbar() {
