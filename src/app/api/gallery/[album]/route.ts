@@ -3,8 +3,8 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
-// This is the parent folder where 'by year' and 'programmes and events' folders are located.
-const GALLERY_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID!;
+// This is the main folder (Website Content)
+const MAIN_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID!;
 
 const auth = new google.auth.GoogleAuth({
     credentials: {
@@ -45,8 +45,16 @@ async function getFolderId(folderName: string, parentId: string): Promise<string
 
 // Function to find an album folder ID by its name within a list of possible parent folders.
 async function findAlbumFolderId(albumName: string, parentFolderNames: string[]): Promise<string | null> {
+    // MAIN_FOLDER_ID is already "Website Content", so get Gallery folder from it
+    const galleryFolderId = await getFolderId('Gallery', MAIN_FOLDER_ID);
+    if (!galleryFolderId) {
+        console.error('Gallery folder not found in Website Content folder');
+        return null;
+    }
+
+    // Now search in "By Year" or "Programmes and Events" inside Gallery
     for (const parentName of parentFolderNames) {
-        const parentFolderId = await getFolderId(parentName, GALLERY_FOLDER_ID);
+        const parentFolderId = await getFolderId(parentName, galleryFolderId);
         if (parentFolderId) {
             const albumFolderId = await getFolderId(albumName, parentFolderId);
             if (albumFolderId) {

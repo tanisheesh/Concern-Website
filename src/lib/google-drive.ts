@@ -26,7 +26,34 @@ interface DriveFile {
   isVideo?: boolean;
 }
 
-// Helper to get the ID of a subfolder (album) by its name
+// Helper to get folder ID by path (supports nested folders)
+const getFolderIdByPath = cache(async (folderPath: string[]): Promise<string | null> => {
+  let currentParentId = MAIN_FOLDER_ID;
+  
+  for (const folderName of folderPath) {
+    try {
+      const res = await drive.files.list({
+        q: `'${currentParentId}' in parents and mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
+        fields: 'files(id)',
+        pageSize: 1,
+      });
+      
+      const folderId = res.data.files?.[0]?.id;
+      if (!folderId) {
+        console.error(`Folder "${folderName}" not found in path:`, folderPath);
+        return null;
+      }
+      currentParentId = folderId;
+    } catch (error) {
+      console.error(`Error fetching folder "${folderName}":`, error);
+      return null;
+    }
+  }
+  
+  return currentParentId;
+});
+
+// Helper to get the ID of a subfolder (album) by its name (legacy support)
 const getFolderId = cache(async (folderName: string, parentId: string): Promise<string | null> => {
   try {
     const res = await drive.files.list({
@@ -41,9 +68,17 @@ const getFolderId = cache(async (folderName: string, parentId: string): Promise<
   }
 });
 
-// Fetches a list of images and videos from a specific folder ID
+// Fetches a list of images and videos from a specific folder path
 export const getMediaFromDrive = cache(async (folderName: string): Promise<DriveFile[]> => {
-  const albumFolderId = await getFolderId(folderName, MAIN_FOLDER_ID);
+  // First get the Gallery folder, then the album folder
+  const galleryFolderId = await getFolderIdByPath(['Gallery']);
+  
+  if (!galleryFolderId) {
+    console.error('Gallery folder not found');
+    return [];
+  }
+
+  const albumFolderId = await getFolderId(folderName, galleryFolderId);
   
   if (!albumFolderId) {
     return [];
@@ -81,7 +116,15 @@ export const getMediaFromDrive = cache(async (folderName: string): Promise<Drive
 
 // Keep the original function for backward compatibility
 export const getImagesFromDrive = cache(async (folderName: string): Promise<DriveFile[]> => {
-  const albumFolderId = await getFolderId(folderName, MAIN_FOLDER_ID);
+  // First get the Gallery folder, then the album folder
+  const galleryFolderId = await getFolderIdByPath(['Gallery']);
+  
+  if (!galleryFolderId) {
+    console.error('Gallery folder not found');
+    return [];
+  }
+
+  const albumFolderId = await getFolderId(folderName, galleryFolderId);
   
   if (!albumFolderId) {
     return [];
@@ -110,7 +153,15 @@ export const getImagesFromDrive = cache(async (folderName: string): Promise<Driv
 
 // Fetches all album folders
 export const getAlbumsFromDrive = cache(async (parentFolderName: string) => {
-    const parentFolderId = await getFolderId(parentFolderName, MAIN_FOLDER_ID);
+    // First get the Gallery folder, then the parent folder
+    const galleryFolderId = await getFolderIdByPath(['Gallery']);
+    
+    if (!galleryFolderId) {
+        console.error('Gallery folder not found');
+        return [];
+    }
+
+    const parentFolderId = await getFolderId(parentFolderName, galleryFolderId);
     if (!parentFolderId) {
         return [];
     }

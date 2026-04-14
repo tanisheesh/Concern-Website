@@ -13,7 +13,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/our-team', label: 'Our Team' },
   { href: '/gallery', label: 'Gallery' },
-  { href: '/annual-reports', label: 'Annual Reports' },
+  { href: '/annual-reports-and-itr', label: 'Annual Reports & ITR' },
   { href: '/assessments', label: 'Assessments' },
   { href: '/therapy', label: 'Therapy' },
   { href: '/training', label: 'Training' },

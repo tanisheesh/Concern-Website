@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '',
     '/our-team',
     '/gallery',
-    '/annual-reports',
+    '/annual-reports-and-itr',
     '/assessments',
     '/therapy',
     '/training',
