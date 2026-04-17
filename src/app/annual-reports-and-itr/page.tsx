@@ -6,6 +6,8 @@ import { getAnnualReports, getIncomeTaxReturns } from '@/lib/pdf-drive';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const dynamic = 'force-dynamic';
+
 function TableSkeleton() {
   return (
     <div className="rounded-lg border bg-card shadow-sm p-4">

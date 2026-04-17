@@ -1,6 +1,5 @@
 // src/lib/pdf-drive.ts
 import { google } from 'googleapis';
-import { cache } from 'react';
 
 const MAIN_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID!;
 
@@ -23,7 +22,7 @@ interface PDFFile {
 }
 
 // Helper to get folder ID by path
-const getFolderIdByPath = cache(async (folderPath: string[]): Promise<string | null> => {
+const getFolderIdByPath = async (folderPath: string[]): Promise<string | null> => {
   let currentParentId = MAIN_FOLDER_ID;
   
   for (const folderName of folderPath) {
@@ -47,10 +46,10 @@ const getFolderIdByPath = cache(async (folderPath: string[]): Promise<string | n
   }
   
   return currentParentId;
-});
+};
 
 // Fetch PDFs from a specific folder path
-export const getPDFsFromDrive = cache(async (folderPath: string[]): Promise<PDFFile[]> => {
+export const getPDFsFromDrive = async (folderPath: string[]): Promise<PDFFile[]> => {
   const folderId = await getFolderIdByPath(folderPath);
   
   if (!folderId) {
@@ -81,14 +80,14 @@ export const getPDFsFromDrive = cache(async (folderPath: string[]): Promise<PDFF
     console.error(`Error fetching PDFs from folder path:`, folderPath, error);
     return [];
   }
-});
+};
 
 // Fetch Annual Reports
-export const getAnnualReports = cache(async (): Promise<PDFFile[]> => {
+export const getAnnualReports = async (): Promise<PDFFile[]> => {
   return getPDFsFromDrive(['Annual Reports and ITR', 'Annual Reports']);
-});
+};
 
 // Fetch Income Tax Returns
-export const getIncomeTaxReturns = cache(async (): Promise<PDFFile[]> => {
+export const getIncomeTaxReturns = async (): Promise<PDFFile[]> => {
   return getPDFsFromDrive(['Annual Reports and ITR', 'Income Tax Returns']);
-});
+};
