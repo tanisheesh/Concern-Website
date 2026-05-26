@@ -106,8 +106,21 @@ export async function GET(
   const albumName = slugToTitle(albumSlug);
   
   try {
-    // Search for the album folder in both possible parent directories.
-    const albumFolderId = await findAlbumFolderId(albumName, ['Programmes and Events', 'By Year']);
+    let albumFolderId: string | null = null;
+
+    // Special case: video-clips fetches from Gallery/Programmes and Events/Videos directly
+    if (albumSlug === 'video-clips') {
+      const galleryFolderId = await getFolderId('Gallery', MAIN_FOLDER_ID);
+      if (galleryFolderId) {
+        const progEventsFolderId = await getFolderId('Programmes and Events', galleryFolderId);
+        if (progEventsFolderId) {
+          albumFolderId = await getFolderId('Videos', progEventsFolderId);
+        }
+      }
+    } else {
+      // Search for the album folder in both possible parent directories.
+      albumFolderId = await findAlbumFolderId(albumName, ['Programmes and Events', 'By Year']);
+    }
 
     if (!albumFolderId) {
         return NextResponse.json({ error: `Album folder '${albumName}' not found` }, { status: 404 });

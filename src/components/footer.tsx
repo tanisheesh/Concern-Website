@@ -20,73 +20,72 @@ const XLogo = () => (
 export default function Footer() {
   return (
     <footer className="bg-secondary text-muted-foreground">
-      <div className="container mx-auto px-4 py-8 md:px-6">
-        <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
-          <div className="flex flex-col items-center md:items-start">
-             <ConcernLogo className="mb-4 text-3xl"/>
-            <p className="text-sm">
+      <div className="container mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
+          
+          {/* Logo + Social - full width on mobile */}
+          <div className="col-span-2 flex flex-col items-center md:col-span-1 md:items-start">
+            <ConcernLogo className="mb-3 text-3xl"/>
+            <p className="text-xs text-center md:text-left md:text-sm">
               A Non-Governmental Organisation (NGO) working in the field of addiction - rehabilitation.
             </p>
-             <div className="mt-4 flex justify-center space-x-4 md:justify-start">
-                <Link href="https://www.facebook.com/share/1CeEcv2GzZ/" target="_blank" rel="noopener noreferrer" aria-label="Facebook page for CONCERN" className="text-muted-foreground hover:text-[#1877F2] transition-colors">
-                  <Facebook />
-                </Link>
-                <Link href="https://x.com/ConcernRehab?t=ivclDgERWan4iWRvHqarwg&s=09" target="_blank" rel="noopener noreferrer" aria-label="X page for CONCERN" className="text-muted-foreground hover:text-black transition-colors">
-                  <XLogo />
-                </Link>
-                <Link href="https://www.instagram.com/sureshbabu_60?igsh=ejd0djdydW5jOHJ3" target="_blank" rel="noopener noreferrer" aria-label="Instagram page for CONCERN" className="text-muted-foreground hover:text-[#E4405F] transition-colors">
-                  <Instagram />
-                </Link>
-                <Link href="https://www.linkedin.com/company/concern-rehab" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn page for CONCERN" className="text-muted-foreground hover:text-[#0A66C2] transition-colors">
-                  <Linkedin />
-                </Link>
-                 <Link href="https://www.youtube.com/@whereyoudiscoverchange" target="_blank" rel="noopener noreferrer" aria-label="Youtube channel for CONCERN" className="text-muted-foreground hover:text-[#FF0000] transition-colors">
-                  <Youtube />
-                </Link>
+            <div className="mt-3 flex justify-center space-x-3 md:justify-start">
+              <Link href="https://www.facebook.com/share/1CeEcv2GzZ/" target="_blank" rel="noopener noreferrer" aria-label="Facebook page for CONCERN" className="text-muted-foreground hover:text-[#1877F2] transition-colors">
+                <Facebook className="h-5 w-5" />
+              </Link>
+              <Link href="https://x.com/ConcernRehab?t=ivclDgERWan4iWRvHqarwg&s=09" target="_blank" rel="noopener noreferrer" aria-label="X page for CONCERN" className="text-muted-foreground hover:text-black transition-colors">
+                <XLogo />
+              </Link>
+              <Link href="https://www.instagram.com/concern.rehab" target="_blank" rel="noopener noreferrer" aria-label="Instagram page for CONCERN" className="text-muted-foreground hover:text-[#E4405F] transition-colors">
+                <Instagram className="h-5 w-5" />
+              </Link>
+              <Link href="https://www.linkedin.com/company/concern-rehab" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn page for CONCERN" className="text-muted-foreground hover:text-[#0A66C2] transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </Link>
+              <Link href="https://www.youtube.com/@whereyoudiscoverchange" target="_blank" rel="noopener noreferrer" aria-label="Youtube channel for CONCERN" className="text-muted-foreground hover:text-[#FF0000] transition-colors">
+                <Youtube className="h-5 w-5" />
+              </Link>
             </div>
           </div>
-          
-          <div className="flex flex-col items-center md:items-start">
-            <h3 className="mb-2 font-semibold text-foreground uppercase tracking-wider">Registered Office</h3>
-            <address className="space-y-1 not-italic text-sm">
-              <p className="flex items-start text-left">
-                <span>CONCERN, Plot No 60, First Cross Street, Kanakadhara Nagar, Valasaravakkam, Chennai - 600 087.</span>
-              </p>
+
+          {/* Registered Office */}
+          <div className="flex flex-col items-start">
+            <h3 className="mb-2 text-xs font-semibold text-foreground uppercase tracking-wider md:text-sm">Registered Office</h3>
+            <address className="not-italic text-xs md:text-sm">
+              <p>CONCERN, Plot No 60, First Cross Street, Kanakadhara Nagar, Valasaravakkam, Chennai - 600 087.</p>
             </address>
           </div>
 
-          <div className="flex flex-col items-center md:items-start">
-            <h3 className="mb-2 font-semibold text-foreground uppercase tracking-wider">Rehab Centre</h3>
-            <address className="space-y-2 not-italic text-sm">
-              <p className="flex items-start text-left">
-                <span>CONCERN, Zonta Resource Centre, No.5, 3rd Street, Manikam Nagar, Noothancheri, Madambakam, Chennai - 600 126.</span>
-              </p>
-              <a href="tel:04446865176" className="flex items-baseline hover:text-primary transition-colors">
-                <Phone className="mr-3 h-4 w-4 shrink-0 text-primary" />
+          {/* Rehab Centre */}
+          <div className="flex flex-col items-start">
+            <h3 className="mb-2 text-xs font-semibold text-foreground uppercase tracking-wider md:text-sm">Rehab Centre</h3>
+            <address className="space-y-1 not-italic text-xs md:text-sm">
+              <p>CONCERN, Zonta Resource Centre, No.5, 3rd Street, Manikam Nagar, Noothancheri, Madambakam, Chennai - 600 126.</p>
+              <a href="tel:04446865176" className="flex items-center hover:text-primary transition-colors mt-1">
+                <Phone className="mr-2 h-3 w-3 shrink-0 text-primary md:h-4 md:w-4" />
                 <span>044 46865176</span>
               </a>
             </address>
           </div>
-          
-          <div className="flex flex-col items-center md:items-start">
-            <h3 className="mb-2 font-semibold text-foreground uppercase tracking-wider">Contact</h3>
-             <div className="space-y-1 text-sm">
-                <a href="mailto:concernrehab@gmail.com" className="flex items-baseline hover:text-primary transition-colors">
-                  <Mail className="mr-3 h-4 w-4 shrink-0 text-primary" />
-                  <span>concernrehab@gmail.com</span>
-                </a>
-                <a href="tel:+919840800816" className="flex items-baseline hover:text-primary transition-colors">
-                  <Phone className="mr-3 h-4 w-4 shrink-0 text-primary" />
-                  <span>+91 9840800816</span>
-                </a>
-              </div>
+
+          {/* Contact */}
+          <div className="flex flex-col items-start">
+            <h3 className="mb-2 text-xs font-semibold text-foreground uppercase tracking-wider md:text-sm">Contact</h3>
+            <div className="space-y-1 text-xs md:text-sm">
+              <a href="mailto:concernrehab@gmail.com" className="flex items-center hover:text-primary transition-colors">
+                <Mail className="mr-2 h-3 w-3 shrink-0 text-primary md:h-4 md:w-4" />
+                <span>concernrehab@gmail.com</span>
+              </a>
+              <a href="tel:+919840800816" className="flex items-center hover:text-primary transition-colors">
+                <Phone className="mr-2 h-3 w-3 shrink-0 text-primary md:h-4 md:w-4" />
+                <span>+91 9840800816</span>
+              </a>
+            </div>
           </div>
 
         </div>
-        <div className="mt-8 border-t pt-6 text-center text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} CONCERN. All Rights Reserved.
-          </p>
+        <div className="mt-6 border-t pt-4 text-center text-xs md:text-sm">
+          <p>&copy; {new Date().getFullYear()} CONCERN. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

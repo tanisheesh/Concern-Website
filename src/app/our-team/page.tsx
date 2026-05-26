@@ -25,6 +25,8 @@ const managementStaff = [
 const technicalSupporters = [
   { name: 'Arch. Chamraj Suresh Babu, M.L.A.', role: 'Design Consultant' },
   { name: 'Mr. Tanish Poddar, B.Tech.', role: 'Web Developer' },
+  { name: 'Mr. Nishant Ranjan, B.Tech', role: 'Web Developer' },
+  { name: 'Ms. Nidhi Nayana, B.Tech', role: 'Web Developer' },
   { name: 'Mr. Madhavan', role: 'Web Designer' },
 ];
 

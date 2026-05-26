@@ -8,6 +8,8 @@ import ClientNavbar from '@/components/client-navbar';
 import Footer from '@/components/footer';
 import BackToTop from '@/components/back-to-top';
 import AppClientShell from '@/components/app-client-shell';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -73,6 +75,8 @@ export default function RootLayout({
         <AppClientShell>
           {children}
         </AppClientShell>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
