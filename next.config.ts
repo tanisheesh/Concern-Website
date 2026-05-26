@@ -44,6 +44,10 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups'
           }
         ],
       },
@@ -52,30 +56,12 @@ const nextConfig: NextConfig = {
 
   images: {
     dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
+    contentDispositionType: 'inline',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
         hostname: 'cijik.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.freepik.com',
         port: '',
         pathname: '/**',
       },

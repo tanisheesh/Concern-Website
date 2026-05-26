@@ -18,10 +18,15 @@ export default function AppClientShell({
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // Skip splash on repeat visits within the same browser session
+        if (sessionStorage.getItem('splashShown')) {
+            setIsLoading(false);
+            return;
+        }
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2000); 
-
+            sessionStorage.setItem('splashShown', '1');
+        }, 800);
         return () => clearTimeout(timer);
     }, []);
 

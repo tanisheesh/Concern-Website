@@ -47,6 +47,7 @@ const formSchema = z.object({
 export default function ContactForm() {
   const { toast } = useToast();
   const [isPending, startTransition] = React.useTransition();
+  const [statusMessage, setStatusMessage] = React.useState('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,18 +63,12 @@ export default function ContactForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
       const result = await sendContactEmail(values);
+      setStatusMessage(result.message);
       if (result.success) {
-        toast({
-          title: 'Form Submitted!',
-          description: result.message,
-        });
+        toast({ title: 'Form Submitted!', description: result.message });
         form.reset();
       } else {
-        toast({
-          title: 'Error',
-          description: result.message,
-          variant: 'destructive',
-        });
+        toast({ title: 'Error', description: result.message, variant: 'destructive' });
       }
     });
   }
@@ -94,6 +89,9 @@ export default function ContactForm() {
                 <CardDescription>Please fill up and submit</CardDescription>
             </CardHeader>
             <CardContent>
+                 <div aria-live="polite" aria-atomic="true" className="sr-only">
+                   {statusMessage}
+                 </div>
                  <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">

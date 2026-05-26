@@ -1,167 +1,116 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { drive_v3 } from 'googleapis';
+import { drive, withTimeout } from '@/lib/google-auth';
+import { slugToTitle } from '@/lib/albums';
+import { rateLimit } from '@/lib/rate-limit';
 
-// src/app/api/gallery/[album]/route.ts
-import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
-
-// This is the main folder (Website Content)
 const MAIN_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID!;
 
-const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-});
-
-const drive = google.drive({ version: 'v3', auth });
-
-// A simple in-memory cache to avoid repeatedly fetching folder IDs.
-const folderIdCache = new Map<string, string>();
+interface CacheEntry { id: string; expiresAt: number }
+const folderIdCache = new Map<string, CacheEntry>();
+const FOLDER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 async function getFolderId(folderName: string, parentId: string): Promise<string | null> {
-    const cacheKey = `${parentId}-${folderName}`;
-    if (folderIdCache.has(cacheKey)) {
-        return folderIdCache.get(cacheKey)!;
-    }
+  const key = `${parentId}-${folderName}`;
+  const cached = folderIdCache.get(key);
+  if (cached && Date.now() < cached.expiresAt) return cached.id;
 
-    try {
-        const res = await drive.files.list({
-            q: `'${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
-            fields: 'files(id, name)', // We only need id and name
-            pageSize: 1,
-        });
-        const folder = res.data.files?.[0];
-        if (folder?.id) {
-            folderIdCache.set(cacheKey, folder.id);
-            return folder.id;
-        }
-        return null;
-    } catch (error) {
-        console.error(`Error fetching ID for folder "${folderName}":`, error);
-        return null;
-    }
-}
-
-// Function to find an album folder ID by its name within a list of possible parent folders.
-async function findAlbumFolderId(albumName: string, parentFolderNames: string[]): Promise<string | null> {
-    // MAIN_FOLDER_ID is already "Website Content", so get Gallery folder from it
-    const galleryFolderId = await getFolderId('Gallery', MAIN_FOLDER_ID);
-    if (!galleryFolderId) {
-        console.error('Gallery folder not found in Website Content folder');
-        return null;
-    }
-
-    // Now search in "By Year" or "Programmes and Events" inside Gallery
-    for (const parentName of parentFolderNames) {
-        const parentFolderId = await getFolderId(parentName, galleryFolderId);
-        if (parentFolderId) {
-            const albumFolderId = await getFolderId(albumName, parentFolderId);
-            if (albumFolderId) {
-                return albumFolderId;
-            }
-        }
+  try {
+    const res = await withTimeout(drive.files.list({
+      q: `'${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
+      fields: 'files(id)',
+      pageSize: 1,
+    }));
+    const id = res.data.files?.[0]?.id;
+    if (id) {
+      if (folderIdCache.size >= 500) {
+        const firstKey = folderIdCache.keys().next().value;
+        if (firstKey) folderIdCache.delete(firstKey);
+      }
+      folderIdCache.set(key, { id, expiresAt: Date.now() + FOLDER_CACHE_TTL });
+      return id;
     }
     return null;
+  } catch (error) {
+    console.error(`Error fetching folder "${folderName}":`, error);
+    return null;
+  }
 }
 
-// Helper to convert a slug back to a title case name.
-function slugToTitle(slug: string): string {
-  // Handle specific mappings first
-  const specificMappings: { [key: string]: string } = {
-    'ministry-of-social-justice-and-empowerment': 'Ministry of Social Justice and Empowerment',
-    'synopsis': 'Synopsis',
-    'training-programmes': 'Training Programmes',
-    'video-clips': 'Video Clips',
-    'concern-premises': 'Concern Premises',
-    'awareness-programmes': 'Awareness Programmes',
-    'award-recognitions': 'Awards & Recognitions', // Updated to match new folder name
-    'awards-recognitions': 'Awards & Recognitions', // Alternative slug mapping
-    'sanctuary': 'Sanctuary',
-  };
-
-  // Check if we have a specific mapping
-  if (specificMappings[slug]) {
-    return specificMappings[slug];
+async function findAlbumFolderId(albumName: string, parentNames: string[]): Promise<string | null> {
+  const galleryId = await getFolderId('Gallery', MAIN_FOLDER_ID);
+  if (!galleryId) return null;
+  for (const parentName of parentNames) {
+    const parentId = await getFolderId(parentName, galleryId);
+    if (parentId) {
+      const albumId = await getFolderId(albumName, parentId);
+      if (albumId) return albumId;
+    }
   }
-
-  // Default conversion for years and other albums
-  return slug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  return null;
 }
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ album: string }> }
 ) {
-  const { album: albumSlug } = await params;
-  
-  if (!albumSlug) {
-      return NextResponse.json({ error: 'Album slug is required' }, { status: 400 });
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  if (!rateLimit(ip, 30, 60_000)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  // Convert slug to a potential folder name.
+  const { album: albumSlug } = await params;
+  if (!albumSlug || !/^[a-z0-9-]+$/.test(albumSlug)) {
+    return NextResponse.json({ error: 'Invalid album slug' }, { status: 400 });
+  }
+
   const albumName = slugToTitle(albumSlug);
-  
+
   try {
     let albumFolderId: string | null = null;
 
-    // Special case: video-clips fetches from Gallery/Programmes and Events/Videos directly
     if (albumSlug === 'video-clips') {
-      const galleryFolderId = await getFolderId('Gallery', MAIN_FOLDER_ID);
-      if (galleryFolderId) {
-        const progEventsFolderId = await getFolderId('Programmes and Events', galleryFolderId);
-        if (progEventsFolderId) {
-          albumFolderId = await getFolderId('Videos', progEventsFolderId);
-        }
+      const galleryId = await getFolderId('Gallery', MAIN_FOLDER_ID);
+      if (galleryId) {
+        const progId = await getFolderId('Programmes and Events', galleryId);
+        if (progId) albumFolderId = await getFolderId('Videos', progId);
       }
     } else {
-      // Search for the album folder in both possible parent directories.
       albumFolderId = await findAlbumFolderId(albumName, ['Programmes and Events', 'By Year']);
     }
 
     if (!albumFolderId) {
-        return NextResponse.json({ error: `Album folder '${albumName}' not found` }, { status: 404 });
+      return NextResponse.json({ error: 'Album not found' }, { status: 404 });
     }
-    
-    // List all images and videos in the album folder with pagination.
-    let media: { id: string; name: string; url: string; isVideo: boolean; mimeType: string; }[] = [];
-    let pageToken: string | undefined = undefined;
+
+    let media: { id: string; name: string; url: string; isVideo: boolean; mimeType: string }[] = [];
+    let pageToken: string | undefined;
 
     do {
-      const mediaRes: any = await drive.files.list({
+      const res = await withTimeout(drive.files.list({
         q: `'${albumFolderId}' in parents and (mimeType contains 'image/' or mimeType contains 'video/') and trashed=false`,
         fields: 'nextPageToken, files(id, name, mimeType)',
-        pageSize: 1000, // Max page size
-        pageToken: pageToken,
-      });
+        pageSize: 1000,
+        pageToken,
+      }));
 
-      const files = mediaRes.data.files;
-      if (files && files.length > 0) {
-        const mappedMedia = files.map((file: any) => {
-          const isVideo = file.mimeType?.startsWith('video/') || false;
-          return {
-            id: file.id!,
-            name: file.name!,
-            mimeType: file.mimeType!,
-            isVideo,
-            // Use our proxy API endpoint to serve media
-            url: isVideo ? `/api/video/${file.id}` : `/api/image/${file.id}`,
-          };
-        });
-        media = media.concat(mappedMedia);
-      }
-      
-      pageToken = mediaRes.data.nextPageToken;
+      const files: drive_v3.Schema$File[] = res.data.files ?? [];
+      media = media.concat(files.map((f) => ({
+        id: f.id!,
+        name: f.name!,
+        mimeType: f.mimeType!,
+        isVideo: f.mimeType?.startsWith('video/') ?? false,
+        url: f.mimeType?.startsWith('video/') ? `/api/video/${f.id}` : `/api/image/${f.id}`,
+      })));
 
+      pageToken = res.data.nextPageToken ?? undefined;
     } while (pageToken);
 
-    return NextResponse.json(media);
-
+    return NextResponse.json(media, {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+    });
   } catch (error) {
-    console.error('Google Drive API Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch images from Google Drive' }, { status: 500 });
+    console.error('Gallery API error:', error);
+    return NextResponse.json({ error: 'Failed to fetch album' }, { status: 500 });
   }
 }

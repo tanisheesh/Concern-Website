@@ -1,20 +1,9 @@
 
 // src/lib/google-drive.ts
-import { google } from 'googleapis';
 import { cache } from 'react';
+import { drive } from '@/lib/google-auth';
 
-// Main folder ID from your environment variables
 const MAIN_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID!;
-
-const auth = new google.auth.GoogleAuth({
-  credentials: {
-    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-  },
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-});
-
-const drive = google.drive({ version: 'v3', auth });
 
 interface DriveFile {
   id: string;

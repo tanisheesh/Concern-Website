@@ -1,12 +1,7 @@
 
 import './globals.css';
 import type { Metadata } from 'next';
-import { Toaster } from '@/components/ui/toaster';
-import Header from '@/components/header';
 import { Inter } from 'next/font/google';
-import ClientNavbar from '@/components/client-navbar';
-import Footer from '@/components/footer';
-import BackToTop from '@/components/back-to-top';
 import AppClientShell from '@/components/app-client-shell';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';

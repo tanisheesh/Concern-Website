@@ -3,12 +3,14 @@
 import { z } from 'zod';
 import nodemailer from 'nodemailer';
 
+const sanitize = (s: string) => s.replace(/[\r\n\x00-\x1F\x7F]/g, ' ').trim();
+
 const contactFormSchema = z.object({
-  title: z.string(),
-  name: z.string(),
-  phone: z.string(),
+  title: z.string().transform(sanitize),
+  name: z.string().transform(sanitize),
+  phone: z.string().transform(sanitize),
   email: z.string().email(),
-  comments: z.string(),
+  comments: z.string().max(5000),
 });
 
 export async function sendContactEmail(formData: unknown) {

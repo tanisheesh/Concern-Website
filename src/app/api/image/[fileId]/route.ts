@@ -1,60 +1,43 @@
-// src/app/api/image/[fileId]/route.ts
-import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
-
-const auth = new google.auth.GoogleAuth({
-  credentials: {
-    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-  },
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-});
-
-const drive = google.drive({ version: 'v3', auth });
+import { NextRequest, NextResponse } from 'next/server';
+import type { Readable } from 'stream';
+import { drive, withTimeout } from '@/lib/google-auth';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ fileId: string }> }
 ) {
   const { fileId } = await params;
 
-  try {
-    // Get file metadata to check if it exists and get mime type
-    const file = await drive.files.get({
-      fileId: fileId,
-      fields: 'mimeType, name',
-    });
+  if (!fileId || !/^[a-zA-Z0-9_-]+$/.test(fileId)) {
+    return NextResponse.json({ error: 'Invalid file ID' }, { status: 400 });
+  }
 
-    // Get the file content
-    const response = await drive.files.get(
-      {
-        fileId: fileId,
-        alt: 'media',
-      },
-      {
-        responseType: 'stream',
-      }
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  if (!rateLimit(ip, 200, 60_000)) {
+    return new NextResponse('Too many requests', { status: 429 });
+  }
+
+  try {
+    const file = await withTimeout(drive.files.get({ fileId, fields: 'mimeType' }));
+
+    const response = await withTimeout(
+      drive.files.get({ fileId, alt: 'media' }, { responseType: 'stream' })
     );
 
-    // Convert stream to buffer
     const chunks: Buffer[] = [];
-    for await (const chunk of response.data as any) {
-      chunks.push(Buffer.from(chunk));
+    for await (const chunk of response.data as Readable) {
+      chunks.push(Buffer.from(chunk as Buffer));
     }
-    const buffer = Buffer.concat(chunks);
 
-    // Return the image with proper headers
-    return new NextResponse(buffer, {
+    return new NextResponse(Buffer.concat(chunks), {
       headers: {
-        'Content-Type': file.data.mimeType || 'image/jpeg',
+        'Content-Type': file.data.mimeType ?? 'image/jpeg',
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
   } catch (error) {
     console.error('Error fetching image:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch image' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch image' }, { status: 500 });
   }
 }

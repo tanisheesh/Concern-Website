@@ -4,23 +4,19 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { 
-  Building2, 
-  FileText, 
-  ClipboardCheck, 
-  Users, 
-  Megaphone, 
-  Award, 
+import {
+  Building2,
+  FileText,
+  ClipboardCheck,
+  Users,
+  Megaphone,
+  Award,
   CalendarDays,
   Video,
   HeartHandshake
 } from 'lucide-react';
-import type { Metadata } from 'next';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-
-// Since this is a client component, we cannot export metadata directly.
-// It should be defined on a parent server component or layout if server-side rendering is needed.
+import { PROGRAMME_ALBUMS, SPECIAL_ALBUMS, YEAR_ALBUMS, type Album } from '@/lib/albums';
 
 const EmblemOfIndia = () => (
     <Image 
@@ -32,7 +28,7 @@ const EmblemOfIndia = () => (
     />
 );
 
-const programmeIconMap: { [key: string]: React.ElementType } = {
+const programmeIconMap: Record<string, React.ElementType> = {
   'ministry-of-social-justice-and-empowerment': EmblemOfIndia,
   'synopsis': FileText,
   'training-programmes': ClipboardCheck,
@@ -43,19 +39,7 @@ const programmeIconMap: { [key: string]: React.ElementType } = {
   'sanctuary': HeartHandshake,
 };
 
-// Simplified type for albums
-type Album = {
-  slug: string;
-  title: string;
-};
 
-// Client-side fetching function
-async function fetchAlbums(parentFolder: string): Promise<Album[]> {
-  // In a real app, this would be an API call. For now, we simulate a fetch.
-  // This part needs to be adapted if you have a real API endpoint for albums.
-  console.log(`Fetching albums for: ${parentFolder}`);
-  return []; // Returning empty to avoid build errors, needs implementation
-}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -78,44 +62,11 @@ const itemVariants = {
   },
 };
 
-const staticProgrammeAlbums: Album[] = [
-    { slug: 'ministry-of-social-justice-and-empowerment', title: 'Ministry of Social Justice and Empowerment' },
-    { slug: 'synopsis', title: 'Synopsis' },
-    { slug: 'training-programmes', title: 'Training Programmes' },
-    { slug: 'concern-premises', title: 'Concern Premises' },
-    { slug: 'awareness-programmes', title: 'Awareness Programmes' },
-    { slug: 'award-recognitions', title: 'Awards & Recognitions' },
-];
-
-const specialAlbums: Album[] = [
-    { slug: 'video-clips', title: 'Video Clips' },
-    { slug: 'sanctuary', title: 'Sanctuary' },
-];
-
-const staticYearAlbums: Album[] = [
-    { "slug": "2026", "title": "2026" },
-    { "slug": "2025", "title": "2025" },
-    { "slug": "2024", "title": "2024" },
-    { "slug": "2023", "title": "2023" },
-    { "slug": "2022", "title": "2022" },
-    { "slug": "2021", "title": "2021" },
-    { "slug": "2020", "title": "2020" },
-    { "slug": "2019", "title": "2019" },
-    { "slug": "2018", "title": "2018" },
-    { "slug": "2017", "title": "2017" },
-    { "slug": "2016", "title": "2016" },
-    { "slug": "2014", "title": "2014" },
-    { "slug": "2013", "title": "2013" },
-    { "slug": "2012", "title": "2012" },
-    { "slug": "2011", "title": "2011" },
-    { "slug": "2009", "title": "2009" }
-].sort((a,b) => b.title.localeCompare(a.title));
 
 
 export default function GalleryPage() {
-  // Using static data for client component
-  const programmeAlbums = staticProgrammeAlbums;
-  const yearAlbums = staticYearAlbums;
+  const programmeAlbums = PROGRAMME_ALBUMS;
+  const yearAlbums = YEAR_ALBUMS;
 
   return (
     <div className="container mx-auto px-4 py-12 md:px-6 md:py-16">
@@ -169,7 +120,7 @@ export default function GalleryPage() {
             initial="hidden"
             animate="visible"
         >
-            {specialAlbums.map((album) => {
+            {SPECIAL_ALBUMS.map((album) => {
                 const IconComponent = programmeIconMap[album.slug] || Users;
                 return (
                     <motion.div key={album.slug} variants={itemVariants} className="md:w-1/3">
