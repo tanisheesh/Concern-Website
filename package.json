@@ -1,5 +1,5 @@
 {
-  "name": "nextn",
+  "name": "concern-website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@heroicons/react": "^2.1.6",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -37,9 +36,7 @@
     "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
-    "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
     "googleapis": "^167.0.0",
     "lucide-react": "^0.556.0",
@@ -47,10 +44,8 @@
     "nodemailer": "^7.0.11",
     "patch-package": "^8.0.1",
     "react": "^19.2.1",
-    "react-day-picker": "^9.12.0",
     "react-dom": "^19.2.1",
     "react-hook-form": "^7.68.0",
-    "recharts": "^3.5.1",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.1.13"

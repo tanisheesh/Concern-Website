@@ -1,4 +1,3 @@
-'use client';
 import Link from 'next/link';
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, Youtube } from 'lucide-react';
 import { ConcernLogo } from './logo';

@@ -7,7 +7,7 @@ export default function Header() {
       <div className="container flex h-auto max-w-screen-2xl flex-col items-center justify-center text-center">
         <Link href="/" className="flex flex-col items-center gap-2">
            <Image
-              src="https://cijik.com/uploads/rehabs/1273.jpg"
+              src="/images/concern-logo.jpg"
               alt="Concern Logo"
               width={400}
               height={100}

@@ -34,10 +34,12 @@ export default function BackToTop() {
       size="icon"
       className={cn(
         'fixed bottom-4 right-4 z-50 rounded-full transition-opacity duration-300',
-        isVisible ? 'opacity-100' : 'opacity-0'
+        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       )}
       onClick={scrollToTop}
       aria-label="Go to top"
+      aria-hidden={!isVisible}
+      tabIndex={isVisible ? 0 : -1}
     >
       <ArrowUp />
     </Button>

@@ -24,10 +24,10 @@ const managementStaff = [
 
 const technicalSupporters = [
   { name: 'Arch. Chamraj Suresh Babu, M.L.A.', role: 'Design Consultant' },
+  { name: 'Mr. Madhavan', role: 'Web Designer' },
   { name: 'Mr. Tanish Poddar, B.Tech.', role: 'Web Developer' },
   { name: 'Mr. Nishant Ranjan, B.Tech', role: 'Web Developer' },
   { name: 'Ms. Nidhi Nayana, B.Tech', role: 'Web Developer' },
-  { name: 'Mr. Madhavan', role: 'Web Designer' },
 ];
 
 const committeeOfSupporters = [
@@ -44,7 +44,7 @@ const committeeOfSupporters = [
 
 const pillarsOfStrength = [
     { name: 'Ministry of Social Justice and Empowerment (MoSJE)', role: 'Govt. Of India, New Delhi' },
-    { name: 'National Institue of Social Defence', role: 'New Delhi'},
+    { name: 'National Institute of Social Defence', role: 'New Delhi'},
     { name: 'State Bank of India', role: 'Head Office, Chennai' },
     { name: 'Centre for Social Initiative and Management (CSIM)', role: 'Alapakkam, Chennai' },
     { name: 'Zonta Resource Center', role: 'Madambakkam, Chennai' },

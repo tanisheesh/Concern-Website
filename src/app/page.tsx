@@ -48,9 +48,6 @@ const itemVariants = {
 };
 
 export default function Home() {
-  const row1Facilities = facilities.slice(0, 3);
-  const row2Facilities = facilities.slice(3, 6);
-  const row3Facilities = facilities.slice(6, 9);
 
   return (
     <div className="flex flex-col">
@@ -118,7 +115,6 @@ export default function Home() {
               width={1200}
               height={675}
               className="h-auto w-full object-cover"
-              data-ai-hint="community support group"
               priority
             />
           </div>
@@ -180,59 +176,23 @@ export default function Home() {
                 The Comprehensive care with coping skills in our rehabilitation program guides the individual to cope up with the demands of daily living without addictive substance. The Holistic approach of our protocol is adapted to these special individuals' needs.
               </p>
           </motion.div>
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {row1Facilities.map((facility, index) => (
+            {facilities.map((facility, index) => (
               <motion.div key={index} variants={itemVariants}>
                 <Card className="flex flex-col p-6 shadow-md transition-shadow hover:shadow-lg h-full">
                   <div className="flex items-start">
-                      <CheckCircle className="mr-4 mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                      <p className="text-base text-card-foreground">{facility}</p>
+                    <CheckCircle className="mr-4 mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                    <p className="text-base text-card-foreground">{facility}</p>
                   </div>
                 </Card>
               </motion.div>
             ))}
-          </motion.div>
-          <motion.div 
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {row2Facilities.map((facility, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <Card className="flex flex-col p-6 shadow-md transition-shadow hover:shadow-lg h-full">
-                  <div className="flex items-start">
-                      <CheckCircle className="mr-4 mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                      <p className="text-base text-card-foreground">{facility}</p>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-           <motion.div 
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-           >
-              {row3Facilities.map((facility, index) => (
-                <motion.div key={index} variants={itemVariants}>
-                  <Card className="flex flex-col p-6 shadow-md transition-shadow hover:shadow-lg h-full">
-                    <div className="flex items-start">
-                        <CheckCircle className="mr-4 mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                        <p className="text-base text-card-foreground">{facility}</p>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
           </motion.div>
         </div>
       </section>

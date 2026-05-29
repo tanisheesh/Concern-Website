@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { ALL_ALBUM_SLUGS } from '@/lib/albums';
 
-const BASE_URL = 'https://your-website-url.com';
+const BASE_URL = 'https://www.concernrehab.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/therapy',
     '/training',
     '/mosje',
+    '/sanctuary',
     '/contact-us',
   ];
 

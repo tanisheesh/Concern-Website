@@ -151,6 +151,11 @@ export default function AlbumPage() {
           Slide {current} of {count}
         </div>
       )}
+      {!isLoading && count > 1 && (
+        <p className="mt-1 text-center text-xs text-muted-foreground md:hidden">
+          Swipe left or right to navigate
+        </p>
+      )}
     </div>
   );
 }

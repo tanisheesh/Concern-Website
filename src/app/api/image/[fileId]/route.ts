@@ -3,6 +3,16 @@ import type { Readable } from 'stream';
 import { drive, withTimeout } from '@/lib/google-auth';
 import { rateLimit } from '@/lib/rate-limit';
 
+function nodeToWebStream(readable: Readable): ReadableStream {
+  return new ReadableStream({
+    start(controller) {
+      readable.on('data', (chunk: Buffer) => controller.enqueue(new Uint8Array(chunk)));
+      readable.on('end', () => controller.close());
+      readable.on('error', (err: Error) => controller.error(err));
+    },
+  });
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ fileId: string }> }
@@ -19,18 +29,12 @@ export async function GET(
   }
 
   try {
-    const file = await withTimeout(drive.files.get({ fileId, fields: 'mimeType' }));
+    const [file, response] = await Promise.all([
+      withTimeout(drive.files.get({ fileId, fields: 'mimeType' })),
+      withTimeout(drive.files.get({ fileId, alt: 'media' }, { responseType: 'stream' })),
+    ]);
 
-    const response = await withTimeout(
-      drive.files.get({ fileId, alt: 'media' }, { responseType: 'stream' })
-    );
-
-    const chunks: Buffer[] = [];
-    for await (const chunk of response.data as Readable) {
-      chunks.push(Buffer.from(chunk as Buffer));
-    }
-
-    return new NextResponse(Buffer.concat(chunks), {
+    return new NextResponse(nodeToWebStream(response.data as Readable), {
       headers: {
         'Content-Type': file.data.mimeType ?? 'image/jpeg',
         'Cache-Control': 'public, max-age=31536000, immutable',

@@ -85,7 +85,7 @@ const dailyRoutine = [
   { time: '10.30 A.M.', agenda: 'Moral / Motivational story', duration: '30 Minutes', highlight: false },
   { time: '11.00 A.M.', agenda: 'Tea', duration: '30 Minutes', highlight: false },
   { time: '11.30 A.M.', agenda: 'Cognitive Behavioural Therapy (CBT)', duration: '1 Hour', highlight: false },
-  { time: '12.30 A.M.', agenda: "Counsellor's time with patients", duration: '1 Hour', highlight: false },
+  { time: '12.30 P.M.', agenda: "Counsellor's time with patients", duration: '1 Hour', highlight: false },
   { time: '1.30 P.M.', agenda: 'Lunch and rest', duration: '1 Hour 30 Minutes', highlight: false },
   { time: '3.00 P.M.', agenda: 'Group Activity', duration: '1 Hour', highlight: false },
   { time: '4.00 P.M.', agenda: 'Tea', duration: '30 Minutes', highlight: false },

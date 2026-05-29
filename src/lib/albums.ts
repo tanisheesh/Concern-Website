@@ -8,7 +8,6 @@ export const ALBUM_TITLES: Record<string, string> = {
   'concern-premises': 'Concern Premises',
   'awareness-programmes': 'Awareness Programmes',
   'award-recognitions': 'Awards & Recognitions',
-  'awards-recognitions': 'Awards & Recognitions',
   'sanctuary': 'Sanctuary',
 };
 

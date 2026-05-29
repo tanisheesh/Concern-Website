@@ -32,7 +32,7 @@ export default function SplashScreen({ isVisible }: SplashScreenProps) {
             }}
           >
             <Image
-              src="https://cijik.com/uploads/rehabs/1273.jpg"
+              src="/images/concern-logo.jpg"
               alt="Concern Logo"
               width={400}
               height={100}

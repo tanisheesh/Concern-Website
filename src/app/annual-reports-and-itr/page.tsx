@@ -46,7 +46,7 @@ async function AnnualReportsTable() {
               <TableCell className="font-medium">{report.year}</TableCell>
               <TableCell className="text-right">
                 <Button asChild size="sm" variant="default">
-                  <a href={report.viewLink} target="_blank" rel="noopener noreferrer">
+                  <a href={report.downloadLink} target="_blank" rel="noopener noreferrer">
                     <Download className="mr-2 h-4 w-4" />
                     Download
                   </a>
@@ -86,7 +86,7 @@ async function ITRTable() {
               <TableCell className="font-medium">{report.year}</TableCell>
               <TableCell className="text-right">
                 <Button asChild size="sm" variant="default">
-                  <a href={report.viewLink} target="_blank" rel="noopener noreferrer">
+                  <a href={report.downloadLink} target="_blank" rel="noopener noreferrer">
                     <Download className="mr-2 h-4 w-4" />
                     Download
                   </a>

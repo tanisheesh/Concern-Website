@@ -5,12 +5,20 @@ import nodemailer from 'nodemailer';
 
 const sanitize = (s: string) => s.replace(/[\r\n\x00-\x1F\x7F]/g, ' ').trim();
 
+const escapeHtml = (s: string) =>
+  s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
 const contactFormSchema = z.object({
-  title: z.string().transform(sanitize),
-  name: z.string().transform(sanitize),
-  phone: z.string().transform(sanitize),
-  email: z.string().email(),
-  comments: z.string().max(5000),
+  title: z.string().min(1, 'Title is required').transform(sanitize),
+  name: z.string().min(2, 'Name must be at least 2 characters.').transform(sanitize),
+  phone: z.string().min(10, 'Phone number must be at least 10 digits.').transform(sanitize),
+  email: z.string().email('Please enter a valid email address.'),
+  comments: z.string().min(10, 'Comments must be at least 10 characters.').max(5000).transform(sanitize),
 });
 
 export async function sendContactEmail(formData: unknown) {
@@ -25,7 +33,7 @@ export async function sendContactEmail(formData: unknown) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // true for 465, false for other ports
+    secure: false,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD,
@@ -39,12 +47,12 @@ export async function sendContactEmail(formData: unknown) {
       subject: `New Enquiry from ${title}. ${name}`,
       html: `
         <h1>New Website Enquiry</h1>
-        <p><strong>Name:</strong> ${title}. ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Name:</strong> ${escapeHtml(title)}. ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
         <hr>
         <p><strong>Comments:</strong></p>
-        <p>${comments}</p>
+        <p>${escapeHtml(comments)}</p>
       `,
     });
     return { success: true, message: 'Thank you for your enquiry. We will get back to you soon.' };
