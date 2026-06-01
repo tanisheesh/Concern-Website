@@ -3,8 +3,6 @@
  * Never import this in client components.
  */
 
-import type { MediaCategory } from '@/types/admin';
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -14,7 +12,6 @@ export interface GenerateContentInput {
   description: string;
   eventDate?:  string;
   location?:   string;
-  category:    MediaCategory | string;
   contentType: 'pre_event' | 'post_event';
 }
 
@@ -33,7 +30,6 @@ export interface GeneratedPlatformContent {
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL        = 'llama-3.3-70b-versatile';
 
-// System prompt — locks the model strictly to CONCERN NGO social media work
 const SYSTEM_PROMPT = `You are a social media content assistant exclusively for CONCERN, a Chennai-based NGO specialising in addiction rehabilitation and community welfare. Your only purpose is to generate social media captions, posts, and messages for CONCERN's events, programs, and activities.
 
 STRICT RULES:
@@ -69,7 +65,7 @@ Tone: Grateful, celebratory, impactful. Past tense. Highlight numbers and real c
   const platformSpec = isPreEvent ? `
   "instagram": {
     "caption": "<emotional invite — 150-220 chars, builds excitement, ends with CTA>",
-    "hashtags": ["<tag1>", "<tag2>", "<tag3>", "<tag4>", "<tag5>"]
+    "hashtags": ["concernrehab", "<tag2>", "<tag3>", "<tag4>", "<tag5>"]
   },
   "facebook": {
     "content": "<warm invitation — 200-350 chars, community-focused, includes details and CTA>"
@@ -78,14 +74,14 @@ Tone: Grateful, celebratory, impactful. Past tense. Highlight numbers and real c
     "content": "<professional announcement — 250-400 chars, NGO/CSR angle, invites partners>"
   },
   "whatsapp": {
-    "message": "<concise forwardable invite — 100-180 chars, plain text, no hashtags>"
+    "message": "<forwardable invite — 300-450 chars total (every character and space counts toward this limit), plain text, no hashtags, include key details and a clear call to action>"
   },
   "twitter": {
-    "content": "<punchy promo — max 240 chars, 2-3 inline hashtags>"
+    "content": "<punchy promo — 250-280 chars total (every character, space, and hashtag counts toward this limit), 2-3 inline hashtags>"
   }` : `
   "instagram": {
     "caption": "<impact caption — 150-220 chars, highlights outcomes and gratitude, CTA>",
-    "hashtags": ["<tag1>", "<tag2>", "<tag3>", "<tag4>", "<tag5>"]
+    "hashtags": ["concernrehab", "<tag2>", "<tag3>", "<tag4>", "<tag5>"]
   },
   "facebook": {
     "content": "<storytelling recap — 200-350 chars, describes what happened, thanks volunteers>"
@@ -94,17 +90,16 @@ Tone: Grateful, celebratory, impactful. Past tense. Highlight numbers and real c
     "content": "<professional impact report — 250-400 chars, CSR-focused, outcomes for donors>"
   },
   "whatsapp": {
-    "message": "<concise thank-you — 100-180 chars, plain text, shareable summary>"
+    "message": "<forwardable recap — 300-450 chars total (every character and space counts toward this limit), plain text, no hashtags, highlight impact and thank supporters>"
   },
   "twitter": {
-    "content": "<impactful recap — max 240 chars, 2-3 inline hashtags>"
+    "content": "<impactful recap — 250-280 chars total (every character, space, and hashtag counts toward this limit), 2-3 inline hashtags>"
   }`;
 
   return `${intent}
 
 Event details:
 Title: ${input.title}
-Category: ${input.category}
 Description: ${input.description}
 ${meta}
 
@@ -115,8 +110,8 @@ Return ONLY valid JSON (no markdown, no explanation):
 Rules:
 - No generic phrases like "We are pleased to announce"
 - Focus on human impact, beneficiaries, real change
-- Hashtags: relevant to addiction recovery, NGO work, and category
-- Always include #CONCERN and #ConcernRehab in Instagram hashtags`;
+- Instagram hashtags: exactly 5. First MUST be "concernrehab". Remaining 4 must be relevant to addiction recovery and the event.
+- Character limits are strict and inclusive of all spaces, punctuation, and hashtags.`;
 }
 
 // ---------------------------------------------------------------------------
@@ -129,23 +124,32 @@ export async function generateContent(
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error('GROQ_API_KEY is not configured.');
 
-  const response = await fetch(GROQ_API_URL, {
-    method:  'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model:    MODEL,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user',   content: buildUserPrompt(input) },
-      ],
-      temperature:     0.72,
-      max_tokens:      1024,
-      response_format: { type: 'json_object' },
-    }),
-  });
+  let response: Response;
+  try {
+    response = await fetch(GROQ_API_URL, {
+      method:  'POST',
+      signal:  AbortSignal.timeout(30_000),
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model:    MODEL,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user',   content: buildUserPrompt(input) },
+        ],
+        temperature:     0.72,
+        max_tokens:      1024,
+        response_format: { type: 'json_object' },
+      }),
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === 'TimeoutError') {
+      throw new Error('AI request timed out. Please try again.');
+    }
+    throw err;
+  }
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
@@ -163,10 +167,22 @@ export async function generateContent(
 
   try {
     const parsed = JSON.parse(raw) as GeneratedPlatformContent;
-    if (!parsed.instagram || !parsed.facebook || !parsed.linkedin || !parsed.whatsapp || !parsed.twitter) {
+    if (
+      typeof parsed.instagram?.caption  !== 'string' ||
+      !Array.isArray(parsed.instagram?.hashtags)      ||
+      typeof parsed.facebook?.content   !== 'string' ||
+      typeof parsed.linkedin?.content   !== 'string' ||
+      typeof parsed.whatsapp?.message   !== 'string' ||
+      typeof parsed.twitter?.content    !== 'string'
+    ) {
       throw new Error('Incomplete AI response.');
     }
-    parsed.instagram.hashtags = parsed.instagram.hashtags.slice(0, 5);
+
+    // Enforce #concernrehab as first hashtag, exactly 5 total
+    const rawTags  = parsed.instagram.hashtags.map((t: string) => t.replace(/^#/, '').toLowerCase().trim());
+    const otherTags = rawTags.filter((t: string) => t !== 'concernrehab');
+    parsed.instagram.hashtags = ['concernrehab', ...otherTags].slice(0, 5);
+
     return parsed;
   } catch {
     throw new Error('Failed to parse AI response. Please try again.');

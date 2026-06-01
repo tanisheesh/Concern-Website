@@ -13,7 +13,10 @@ export async function POST(req: NextRequest) {
   // Rate limit: 10 session attempts per minute per IP
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
   if (!rateLimit(`session:${ip}`, 10, 60_000)) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: { 'Retry-After': '60' } },
+    );
   }
 
   try {

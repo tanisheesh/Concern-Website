@@ -29,6 +29,13 @@ function looksLikeCode(text: string): boolean {
   return CODE_PATTERNS.some((p) => p.test(text));
 }
 
+// Replace underscores with spaces and collapse whitespace so poorly
+// formatted input like "Unique_Art_Therapy_for_codependents" doesn't leak
+// raw slug text into the generated content.
+function sanitiseText(raw: string): string {
+  return raw.replace(/_/g, ' ').replace(/\s{2,}/g, ' ').trim();
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
@@ -37,7 +44,10 @@ export async function POST(req: NextRequest) {
 
   const userId = session.user.id ?? 'unknown';
   if (!rateLimit(`ai:${userId}`, 10, 60_000)) {
-    return NextResponse.json({ error: 'Too many requests. Please wait a moment.' }, { status: 429 });
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment.' },
+      { status: 429, headers: { 'Retry-After': '60' } },
+    );
   }
 
   let input: GenerateContentInput;
@@ -47,8 +57,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
-  const title       = input.title?.trim()       ?? '';
-  const description = input.description?.trim() ?? '';
+  const title       = sanitiseText(input.title       ?? '');
+  const description = sanitiseText(input.description ?? '');
+  const location    = input.location ? sanitiseText(input.location) : input.location;
 
   if (!title || !description) {
     return NextResponse.json({ error: 'Title and description are required.' }, { status: 400 });
@@ -71,7 +82,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const content = await generateContent(input);
+    const content = await generateContent({ ...input, title, description, location });
     return NextResponse.json(content);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'AI generation failed.';

@@ -17,11 +17,6 @@ import Image from 'next/image';
 import { Eye, EyeOff, Loader2, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const ALLOWED_EMAILS = new Set([
-  'concernrehab@gmail.com',
-  'concernrehabb@gmail.com',
-]);
-
 const schema = z.object({
   email:    z.string().min(1).email(),
   password: z.string().min(8),
@@ -50,11 +45,6 @@ export default function LoginForm() {
   });
 
   const finish = async (user: User) => {
-    if (!ALLOWED_EMAILS.has(user.email?.toLowerCase() ?? '')) {
-      await firebaseSignOut(clientAuth);
-      setError('Access denied.');
-      return;
-    }
     const idToken = await user.getIdToken();
     const res = await fetch('/api/auth/session', {
       method: 'POST',
@@ -62,6 +52,7 @@ export default function LoginForm() {
       body: JSON.stringify({ idToken }),
     });
     if (!res.ok) {
+      await firebaseSignOut(clientAuth);
       setError(res.status === 403 ? 'Access denied.' : 'Sign-in failed. Try again.');
       return;
     }
@@ -112,7 +103,8 @@ export default function LoginForm() {
             src="/images/concern-logo.jpg"
             alt="CONCERN"
             width={180} height={46}
-            className="h-auto w-44 object-contain drop-shadow-sm"
+            className="w-44 object-contain drop-shadow-sm"
+            style={{ height: 'auto' }}
             priority
           />
           <div className="text-center">

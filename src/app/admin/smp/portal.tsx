@@ -9,31 +9,25 @@ import { signOut as firebaseSignOut } from 'firebase/auth';
 import { clientAuth } from '@/lib/firebase';
 import {
   Sparkles, Loader2, Instagram, Facebook, Linkedin,
-  MessageCircle, Twitter, AlertCircle, Copy, Check, LogOut, X,
+  MessageCircle, Twitter, AlertCircle, Copy, Check, LogOut, X, Lock,
 } from 'lucide-react';
 import Image from 'next/image';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/use-toast';
 import type { GeneratedPlatformContent } from '@/lib/ai';
-import type { AdminSessionUser, MediaCategory } from '@/types/admin';
+import type { AdminSessionUser } from '@/types/admin';
 import { cn } from '@/lib/utils';
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
-const CATEGORIES: MediaCategory[] = [
-  'Rehabilitation', 'Community Outreach', 'Awareness Programs',
-  'Food Distribution', 'Events', 'Fundraising', 'Success Stories',
-  'Volunteer Activities', 'Other',
-];
-
 const PLATFORMS = [
-  { key: 'instagram' as const, label: 'Instagram', short: 'IG', icon: Instagram, color: '#E4405F', bg: '#FFF0F3' },
-  { key: 'facebook'  as const, label: 'Facebook',  short: 'FB', icon: Facebook,  color: '#1877F2', bg: '#EEF4FF' },
-  { key: 'linkedin'  as const, label: 'LinkedIn',  short: 'LI', icon: Linkedin,  color: '#0A66C2', bg: '#EEF4FF' },
+  { key: 'instagram' as const, label: 'Instagram', short: 'IG', icon: Instagram,     color: '#E4405F', bg: '#FFF0F3' },
+  { key: 'facebook'  as const, label: 'Facebook',  short: 'FB', icon: Facebook,      color: '#1877F2', bg: '#EEF4FF' },
+  { key: 'linkedin'  as const, label: 'LinkedIn',  short: 'LI', icon: Linkedin,      color: '#0A66C2', bg: '#EEF4FF' },
   { key: 'whatsapp'  as const, label: 'WhatsApp',  short: 'WA', icon: MessageCircle, color: '#25D366', bg: '#F0FFF4' },
-  { key: 'twitter'   as const, label: 'X',         short: 'X',  icon: Twitter,   color: '#000000', bg: '#F5F5F5' },
+  { key: 'twitter'   as const, label: 'X',         short: 'X',  icon: Twitter,       color: '#000000', bg: '#F5F5F5' },
 ] as const;
 
 type PlatformKey = typeof PLATFORMS[number]['key'];
@@ -42,14 +36,28 @@ type PlatformKey = typeof PLATFORMS[number]['key'];
 // Form schema
 // ---------------------------------------------------------------------------
 
+const todayStr = () => new Date().toISOString().split('T')[0];
+
 const formSchema = z.object({
   title:            z.string().min(1, 'Required').max(200),
   eventDescription: z.string().min(1, 'Required').max(5000),
-  eventDate:        z.string().optional(),
+  eventDate:        z.string().min(1, 'Date is required'),
   location:         z.string().max(200).optional(),
-  category:         z.string().default('Other'),
   contentType:      z.enum(['pre_event', 'post_event']).default('post_event'),
+}).refine((data) => {
+  if (data.contentType === 'post_event') return data.eventDate <= todayStr();
+  return true;
+}, {
+  message: 'Post-event date cannot be in the future.',
+  path: ['eventDate'],
+}).refine((data) => {
+  if (data.contentType === 'pre_event') return data.eventDate >= todayStr();
+  return true;
+}, {
+  message: 'Pre-event date must be today or in the future.',
+  path: ['eventDate'],
 });
+
 type FormValues = z.infer<typeof formSchema>;
 
 // ---------------------------------------------------------------------------
@@ -124,15 +132,19 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [content,      setContent]    = useState<EditableContent | null>(null);
-  const [activeTab,    setActiveTab]  = useState<PlatformKey>('instagram');
-  const [genError,     setGenError]   = useState<string | null>(null);
-  const [isGenerating, startGenerate] = useTransition();
-  const [isSigningOut, startSignOut]  = useTransition();
+  const [content,       setContent]      = useState<EditableContent | null>(null);
+  const [activeTab,     setActiveTab]    = useState<PlatformKey>('instagram');
+  const [genError,      setGenError]     = useState<string | null>(null);
+  const [hashtagInput,  setHashtagInput] = useState('');
+  const [isGenerating,  startGenerate]  = useTransition();
+  const [isSigningOut,  startSignOut]   = useTransition();
 
-  const { register, handleSubmit, setValue, watch, formState: { errors } } =
+  const { register, handleSubmit, watch, formState: { errors } } =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useForm<FormValues>({ resolver: zodResolver(formSchema) as any });
+    useForm<FormValues>({
+      resolver:      zodResolver(formSchema) as any,
+      defaultValues: { contentType: 'post_event' },
+    });
 
   const contentType = watch('contentType', 'post_event');
 
@@ -164,7 +176,6 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
             description: values.eventDescription,
             eventDate:   values.eventDate,
             location:    values.location,
-            category:    values.category,
             contentType: values.contentType,
           }),
         });
@@ -194,17 +205,22 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
   // Hashtag helpers
   // ---------------------------------------------------------------------------
 
-  const removeHashtag = (tag: string) => setContent(c => {
-    if (!c) return c;
-    const updated = c.instagram.hashtags.filter(t => t !== tag);
-    return { ...c, instagram: { caption: syncHashtags(c.instagram.caption, updated), hashtags: updated } };
-  });
+  const removeHashtag = (tag: string, index: number) => {
+    if (index === 0) return; // first tag is always locked
+    setContent(c => {
+      if (!c) return c;
+      const updated = c.instagram.hashtags.filter((_, i) => i !== index);
+      return { ...c, instagram: { caption: syncHashtags(c.instagram.caption, updated), hashtags: updated } };
+    });
+  };
 
   const addHashtag = (raw: string) => {
     const tag = normaliseTag(raw);
     if (!tag) return;
     setContent(c => {
-      if (!c || c.instagram.hashtags.includes(tag)) return c;
+      if (!c) return c;
+      if (c.instagram.hashtags.length >= 5) return c;
+      if (c.instagram.hashtags.includes(tag)) return c;
       const updated = [...c.instagram.hashtags, tag];
       return { ...c, instagram: { caption: syncHashtags(c.instagram.caption, updated), hashtags: updated } };
     });
@@ -237,8 +253,13 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
   };
 
   const activePlatform = PLATFORMS.find(p => p.key === activeTab)!;
-  const charLimit = activeTab === 'twitter' ? 280 : activeTab === 'instagram' ? 2200 : 63206;
-  const activeText = getContentText(activeTab);
+  const charLimit =
+    activeTab === 'twitter'   ? 280  :
+    activeTab === 'instagram' ? 2200 :
+    activeTab === 'linkedin'  ? 3000 :
+    activeTab === 'whatsapp'  ? 500  : 63206;
+  const activeText    = getContentText(activeTab);
+  const hashtagsFull  = (content?.instagram.hashtags.length ?? 0) >= 5;
 
   // ---------------------------------------------------------------------------
   // Render
@@ -252,7 +273,7 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Image src="/images/concern-logo.jpg" alt="CONCERN" width={120} height={30}
-              className="h-auto w-28 object-contain" priority />
+              className="w-28 object-contain" style={{ height: 'auto' }} priority />
             <span className="hidden sm:block text-xs font-medium text-muted-foreground border-l border-border/60 pl-3">
               Social Media Portal
             </span>
@@ -280,10 +301,8 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
           {/* ── LEFT: Compose ────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
 
-            {/* Card */}
             <div className="rounded-2xl border border-border/50 bg-card shadow-sm overflow-hidden">
 
-              {/* Card header */}
               <div className="px-5 pt-5 pb-4 border-b border-border/40">
                 <h2 className="text-sm font-semibold text-foreground">Event Details</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">Describe the event and generate platform content</p>
@@ -364,27 +383,25 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
                   {errors.eventDescription && <p className="mt-1 text-xs text-destructive">{errors.eventDescription.message}</p>}
                 </div>
 
-                {/* Category */}
-                <div>
-                  <label className="text-xs font-medium text-foreground block mb-1.5">Category</label>
-                  <select
-                    defaultValue="Other"
-                    onChange={e => setValue('category', e.target.value)}
-                    className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm text-foreground outline-none cursor-pointer transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20 appearance-none"
-                  >
-                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-
                 {/* Date + Location */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="edate" className="text-xs font-medium text-foreground block mb-1.5">Date</label>
+                    <label htmlFor="edate" className="text-xs font-medium text-foreground block mb-1.5">
+                      Date of the Event <span className="text-destructive">*</span>
+                    </label>
                     <input
-                      id="edate" type="date"
+                      id="edate"
+                      type="date"
+                      min={contentType === 'pre_event'  ? todayStr() : undefined}
+                      max={contentType === 'post_event' ? todayStr() : undefined}
                       {...register('eventDate')}
-                      className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className={cn(
+                        'w-full rounded-xl border bg-background px-3 py-2.5 text-sm text-foreground outline-none',
+                        'transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20',
+                        errors.eventDate ? 'border-destructive' : 'border-input',
+                      )}
                     />
+                    {errors.eventDate && <p className="mt-1 text-xs text-destructive">{errors.eventDate.message}</p>}
                   </div>
                   <div>
                     <label htmlFor="loc" className="text-xs font-medium text-foreground block mb-1.5">Location</label>
@@ -426,7 +443,6 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
           <div className="flex flex-col gap-5">
             <div className="rounded-2xl border border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
 
-              {/* Card header */}
               <div className="px-5 pt-5 pb-4 border-b border-border/40">
                 <h2 className="text-sm font-semibold text-foreground">Generated Content</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -497,20 +513,34 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
                     {/* Instagram hashtags */}
                     {activeTab === 'instagram' && content.instagram.hashtags.length > 0 && (
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Hashtags</p>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Hashtags</p>
+                          <span className="text-xs text-muted-foreground tabular-nums">
+                            {content.instagram.hashtags.length}<span className="opacity-50">/5</span>
+                          </span>
+                        </div>
                         <div className="flex flex-wrap gap-1.5">
-                          {content.instagram.hashtags.map(tag => (
+                          {content.instagram.hashtags.map((tag, i) => (
                             <span key={tag}
-                              className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2.5 py-1 text-xs font-medium text-foreground">
+                              className={cn(
+                                'inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium',
+                                i === 0
+                                  ? 'bg-primary/10 text-primary border border-primary/20'
+                                  : 'bg-secondary text-foreground',
+                              )}>
                               #{tag}
-                              <button
-                                type="button"
-                                onClick={() => removeHashtag(tag)}
-                                className="ml-0.5 text-muted-foreground hover:text-destructive transition-colors"
-                                aria-label={`Remove #${tag}`}
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
+                              {i === 0 ? (
+                                <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => removeHashtag(tag, i)}
+                                  className="ml-0.5 text-muted-foreground hover:text-destructive transition-colors"
+                                  aria-label={`Remove #${tag}`}
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              )}
                             </span>
                           ))}
                         </div>
@@ -523,17 +553,25 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Add hashtag</p>
                         <input
                           type="text"
-                          className="w-full rounded-xl border border-input bg-background px-3.5 py-2 text-xs text-foreground outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          value={hashtagInput}
+                          onChange={e => setHashtagInput(e.target.value)}
+                          disabled={hashtagsFull}
+                          placeholder={hashtagsFull ? 'Max 5 hashtags reached' : ''}
+                          className={cn(
+                            'w-full rounded-xl border border-input bg-background px-3.5 py-2 text-xs text-foreground outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20',
+                            hashtagsFull && 'opacity-50 cursor-not-allowed',
+                          )}
                           onKeyDown={e => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
-                              const el = e.target as HTMLInputElement;
-                              addHashtag(el.value);
-                              el.value = '';
+                              addHashtag(hashtagInput);
+                              setHashtagInput('');
                             }
                           }}
                         />
-                        <p className="text-xs text-muted-foreground/60 mt-1">Press Enter to add</p>
+                        {!hashtagsFull && (
+                          <p className="text-xs text-muted-foreground/60 mt-1">Press Enter to add</p>
+                        )}
                       </div>
                     )}
                   </div>
