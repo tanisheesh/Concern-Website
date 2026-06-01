@@ -1,7 +1,6 @@
 
 import './globals.css';
 import type { Metadata } from 'next';
-import AppClientShell from '@/components/app-client-shell';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -51,7 +50,15 @@ export const metadata: Metadata = {
   }
 };
 
-
+/**
+ * Root layout — minimal HTML shell shared by all routes.
+ *
+ * Route groups handle the different layout shells:
+ *   (public)  → public website with Header, Navbar, Footer, SplashScreen
+ *   admin     → admin portal with sidebar, no public chrome
+ *
+ * Analytics and SpeedInsights are loaded here so they cover all routes.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -59,10 +66,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
-      <body className="font-body antialiased flex flex-col min-h-screen" suppressHydrationWarning>
-        <AppClientShell>
-          {children}
-        </AppClientShell>
+      <body className="font-body antialiased" suppressHydrationWarning>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

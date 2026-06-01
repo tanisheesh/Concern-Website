@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
   // Note: eslint config removed - not supported in Next.js 16
   // ESLint will run automatically during builds unless disabled via CLI
 
+  // Native Node.js addons that must not be bundled by Turbopack/webpack
+  serverExternalPackages: ['firebase-admin'],
+
   // Security Headers
   async headers() {
     return [
