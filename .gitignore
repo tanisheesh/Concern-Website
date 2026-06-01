@@ -44,6 +44,9 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+# service account key files — contain private keys, never commit
+*-adminsdk-*.json
+serviceAccountKey.json
 
 # SQLite database (contains admin credentials — never commit)
 social-portal.db

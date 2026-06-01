@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   // ESLint will run automatically during builds unless disabled via CLI
 
   // Native Node.js addons that must not be bundled by Turbopack/webpack
-  serverExternalPackages: ['better-sqlite3'],
+  serverExternalPackages: ['firebase-admin'],
 
   // Security Headers
   async headers() {
