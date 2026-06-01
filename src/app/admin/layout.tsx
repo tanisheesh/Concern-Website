@@ -13,8 +13,8 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Admin Portal | CONCERN',
-    template: '%s | CONCERN Admin',
+    default: 'Admin Portal',
+    template: '%s | Admin',
   },
   description: 'CONCERN NGO Social Media Management Portal',
   robots: {
