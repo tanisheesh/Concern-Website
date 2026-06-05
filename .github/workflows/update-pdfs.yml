@@ -5,6 +5,10 @@ on:
     - cron: '0 3 * * 0'  # Every Sunday at 3 AM UTC
   workflow_dispatch:       # Manual trigger from GitHub Actions tab
 
+concurrency:
+  group: update-pdf-cache
+  cancel-in-progress: false  # Queue; don't kill a running extraction mid-way
+
 permissions:
   contents: write
 
@@ -20,7 +24,7 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
+      - run: npm ci --omit=dev
 
       - name: Extract PDF text
         run: node scripts/extract-pdfs.mjs
@@ -34,5 +38,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/pdf-data.json
-          git diff --staged --quiet || git commit -m "chore: update PDF cache [skip ci]"
-          git push
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update PDF cache [skip ci]"
+            git push
+          else
+            echo "PDF cache unchanged, nothing to commit."
+          fi

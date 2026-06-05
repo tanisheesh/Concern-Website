@@ -1,9 +1,11 @@
 export const WEBSITE_KNOWLEDGE_BASE: string = `
 ## ABOUT CONCERN
 
-We are a Non-Governmental Organisation (NGO) working in the field of addiction rehabilitation. We wish to share the benefits with other suffering men and women and their families. Members of CONCERN have enormous experience in dealing with addiction at various levels with both men and women. Equipped with academic, professional and practical experience in the area of addiction treatment. We made it our Mission to Share our Very Personal Experience and Success. At CONCERN we perceive the grip of addiction as a specific disorder and treat them in simple, medical and psychological method with Holistic Approach.
+Website: https://www.concernrehab.com
 
-Bhanu Suresh Babu (Project Director) treats with a Dedicated Tailor Made Program to suit individuals' need and people of CONCERN have practical experience with professional training and academics. We walk hand in hand with the clients exploring the problem areas and finding solutions to guide them in the process of recovery.
+We are a Non-Profit Charitable Trust and Non-Governmental Organisation (NGO) working in the field of addiction - rehabilitation. We wish to share the benefits with other suffering men and women and their families. Members of CONCERN have enormous experience in dealing with addiction at various levels with both men and women. Equipped with academic, professional and practical experience in the area of addiction treatment. We made it our Mission to Share our Very Personal Experience and Success. At CONCERN we perceive the grip of addiction as a specific disorder and treat them in simple, medical and psychological method with Holistic Approach.
+
+Bhanu Suresh Babu (Founder President) treats with a Dedicated Tailor Made Program to suit individuals' need and people of CONCERN have practical experience with professional training and academics. We walk hand in hand with the clients exploring the problem areas and finding solutions to guide them in the process of recovery.
 
 ## VISION
 
@@ -15,7 +17,7 @@ To address the perils of addiction as a disease and not condemn. Suggest studied
 
 ## VALUES
 
-Transparency, Empathy, Learning and Listening, Parting knowledge and experience, Belongingness, Eventual CHANGE.
+Transparency, Empathy, Learning and Listening, Parting knowledge and experience, Belongingness, Eventual CHANGE
 
 ## FACILITIES
 
@@ -94,10 +96,10 @@ Is for our Patients to go to work from CONCERN and be with us and go for the mee
 
 | Time | Agenda | Duration |
 |------|--------|----------|
-| 6.00 A.M. | Wake up, Freshen | 1 Hour |
+| 6.00 A.M. | "Good Morning" — Wake up, Freshen | 1 Hour |
 | 7.00 A.M. | Tea | 30 Minutes |
 | 7.30 A.M. | Warm up exercise and Yoga | 30 Minutes |
-| 8.00 A.M. | Individual cubicle cleaning, washing, getting ready | 1 Hour |
+| 8.00 A.M. | Individual cubicle cleaning, washing, getting ready etc. | 1 Hour |
 | 9.00 A.M. | Breakfast | 30 Minutes |
 | 9.30 A.M. | Medicine | 30 Minutes |
 | 10.00 A.M. | Daily Reflection | 15 Minutes |
@@ -110,11 +112,11 @@ Is for our Patients to go to work from CONCERN and be with us and go for the mee
 | 3.00 P.M. | Group Activity | 1 Hour |
 | 4.00 P.M. | Tea | 30 Minutes |
 | 4.30 P.M. | Group Therapy | 1 Hour |
-| 5.30 P.M. | In/Out-door games, recreation, calls to family and TV time | 1 Hour 30 Minutes |
+| 5.30 P.M. | In / Out-door games, recreation, calls to family and TV time | 1 Hour 30 Minutes |
 | 7.00 P.M. | Day's thoughts and feelings | 45 Minutes |
 | 7.45 P.M. | Dinner | 45 Minutes |
 | 8.30 P.M. | Medicine | 30 Minutes |
-| 9.00 P.M. | Prayer and Meditation and thanks giving to God, retire | Till next morning 6 A.M. |
+| 9.00 P.M. | Prayer and Meditation and thanks giving to God by individuals at bed and retire. "Good Night" | Till next morning 6 A.M. |
 
 ---
 
@@ -292,6 +294,17 @@ Scoring: 20+ = High dependence | 10–19 = Medium dependence | 1–9 = Low depen
 
 ---
 
+## ADMISSIONS
+
+To seek admission or enquire about treatment at CONCERN, contact the team directly:
+- Phone: +91 9840800816
+- Email: concernrehab@gmail.com
+- Rehab Centre: CONCERN, Zonta Resource Centre, No.5, 3rd Street, Manikam Nagar, Noothancheri, Madambakam, Chennai - 600 126. Phone: 044 46865176
+
+CONCERN offers both In-Patient and Out-Patient services. Under the MoSJE NAPDDR scheme, the IRCA facility provides free in-patient treatment and rehabilitation including stay and food. Walk-ins and family referrals are welcome. Fill the online enquiry form at https://www.concernrehab.com/contact-us or visit the rehab centre directly.
+
+---
+
 ## CONTACT & ADDRESSES
 
 ### Registered Office
@@ -311,4 +324,7 @@ Email: concernrehab@gmail.com
 - LinkedIn: https://www.linkedin.com/company/concern-rehab
 - YouTube: https://www.youtube.com/@whereyoudiscoverchange
 - X (Twitter): https://x.com/ConcernRehab
+
+### Live CCTV
+The rehab centre has a live CCTV feed accessible at: http://136.185.19.20/
 `;

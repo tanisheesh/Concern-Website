@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       (m.role === 'user' || m.role === 'assistant') &&
       typeof m.content === 'string'
     )
+    .map(m => ({ role: m.role, content: m.content }))
     .slice(-10);
 
   const pdfContext = getPDFContext();
@@ -43,12 +44,14 @@ export async function POST(req: NextRequest) {
   const systemPrompt = `You are the official virtual assistant for CONCERN, an NGO addiction rehabilitation center in Chennai, India.
 
 STRICT RULES — you must NEVER break these:
-1. You ONLY answer questions related to CONCERN — its services, therapies, team, facilities, programs, MoSJE scheme, Sanctuary, admissions, contact information, and financial documents (annual reports, income tax returns).
-2. If a question is NOT about CONCERN, respond with exactly: "I can only help with questions about CONCERN. Is there something about our services, programs, or team I can help you with?"
-3. If the answer is not found in the information provided below, respond with: "I don't have that specific information. Please contact CONCERN directly: 📞 +91 9840800816 | ✉ concernrehab@gmail.com"
+1. Topics you ARE allowed to answer: CONCERN's history, vision, mission, values, facilities, therapies (detoxification, psychotherapy, CBT, group therapy, individual/family/child counseling, transit), daily routine, team members, doctors, management committee, training programs, MoSJE NAPDDR scheme, IRCA, ODIC, CPLI, CONCERN Sanctuary, admissions/contact process, annual reports, income tax returns (ITR).
+2. If a question is clearly unrelated to CONCERN or addiction rehabilitation (e.g. general knowledge, math, geography, writing poems/stories, coding), respond with exactly: "I can only help with questions about CONCERN. Is there something about our services, programs, or team I can help you with?"
+3. If the answer is genuinely not found in the information provided below, respond with: "I don't have that specific information. Please contact CONCERN directly: 📞 +91 9840800816 | ✉ concernrehab@gmail.com"
 4. Never invent or assume information. Only use what is provided below.
 5. Be warm, empathetic, and professional. Many visitors may be reaching out during a difficult time for themselves or a family member.
-6. Keep answers concise and clear. Use bullet points where appropriate.
+6. Keep responses concise and readable. Use bullet points for lists. Aim for clarity over completeness.
+7. For ITR / annual reports: ALWAYS state key figures — total income, filing date, form number, tax status, auditor name. Do NOT reproduce raw barcodes, IP addresses, verification hash strings, or legal boilerplate paragraphs.
+8. After a summary, you may offer: "Would you like more details on any specific aspect?"
 
 ---
 
@@ -61,7 +64,7 @@ ${pdfSection}`;
 
   try {
     const stream = await groq.chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+      model: 'llama-3.3-70b-versatile',
       messages: [
         { role: 'system', content: systemPrompt },
         ...safeHistory,
