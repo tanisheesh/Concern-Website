@@ -36,9 +36,10 @@ function GoogleIcon({ className }: { className?: string }) {
 
 export default function LoginForm() {
   const router = useRouter();
-  const [showPw,   setShowPw]   = useState(false);
-  const [error,    setError]    = useState<string | null>(null);
-  const [pending,  startTx]     = useTransition();
+  const [showPw,        setShowPw]       = useState(false);
+  const [error,         setError]        = useState<string | null>(null);
+  const [pending,       startTx]         = useTransition();
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -78,19 +79,22 @@ export default function LoginForm() {
     });
   };
 
-  const onGoogle = () => {
+  const onGoogle = async () => {
     setError(null);
-    startTx(async () => {
-      try {
-        const { user } = await signInWithPopup(clientAuth, new GoogleAuthProvider());
-        await finish(user);
-      } catch (e: unknown) {
-        const code = (e as { code?: string }).code ?? '';
-        if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
-          setError('Google sign-in failed. Try again.');
-        }
+    setGoogleLoading(true);
+    try {
+      // signInWithPopup must be called synchronously from the click handler —
+      // wrapping it in startTransition defers execution and browsers block the popup.
+      const { user } = await signInWithPopup(clientAuth, new GoogleAuthProvider());
+      await finish(user);
+    } catch (e: unknown) {
+      const code = (e as { code?: string }).code ?? '';
+      if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
+        setError('Google sign-in failed. Try again.');
       }
-    });
+    } finally {
+      setGoogleLoading(false);
+    }
   };
 
   return (
@@ -129,10 +133,10 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={onGoogle}
-              disabled={pending}
+              disabled={pending || googleLoading}
               className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-background hover:bg-secondary/50 px-4 py-3 text-sm font-medium text-foreground transition-all duration-150 hover:border-primary/30 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {pending ? <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /> : <GoogleIcon />}
+              {googleLoading ? <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /> : <GoogleIcon />}
               <span>Continue with Google</span>
             </button>
 

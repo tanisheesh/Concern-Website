@@ -133,7 +133,7 @@ export default function AlbumPage() {
         <Carousel
           setApi={setApi}
           opts={{ align: 'start', loop: media.length > 1 }}
-          className="w-full max-w-sm md:max-w-4xl"
+          className="w-full max-w-sm sm:max-w-2xl md:max-w-4xl"
         >
           <CarouselContent>
             {renderCarouselItems()}

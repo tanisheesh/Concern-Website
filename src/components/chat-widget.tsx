@@ -197,66 +197,16 @@ export default function ChatWidget() {
   const canSend = input.trim().length > 0 && !isLoading;
 
   return (
-    <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-50 flex flex-row items-end gap-3">
+    <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-50 flex flex-col items-start gap-3">
 
-      {/* ── Launcher column: pill stacks above FAB ── */}
-      <div className="flex flex-col items-start gap-2">
-        <AnimatePresence>
-          {!isOpen && (
-            <motion.button
-              initial={{ opacity: 0, y: 6, scale: 0.92 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 6, scale: 0.92 }}
-              transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-              onClick={() => setIsOpen(true)}
-              aria-label="Open chat"
-              className="flex items-center gap-2 bg-background text-foreground text-sm font-medium px-4 py-2.5 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.10)] border border-border/70 whitespace-nowrap hover:border-primary/40 hover:shadow-[0_4px_18px_rgba(0,0,0,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200"
-            >
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                className="h-2 w-2 rounded-full bg-emerald-400 shrink-0"
-              />
-              Chat with us
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        <motion.button
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
-          onClick={() => setIsOpen(v => !v)}
-          aria-label={isOpen ? 'Close chat' : 'Open chat'}
-          aria-expanded={isOpen}
-          aria-haspopup="dialog"
-          className="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-[0_4px_18px_rgba(0,0,0,0.20)] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-shadow hover:shadow-[0_4px_22px_rgba(0,0,0,0.26)]"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {isOpen ? (
-              <motion.span key="x"
-                initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.14 }}>
-                <X className="h-6 w-6" />
-              </motion.span>
-            ) : (
-              <motion.span key="msg"
-                initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.14 }}>
-                <MessageCircle className="h-6 w-6" />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </motion.button>
-      </div>
-
-      {/* ── Chat panel — opens to the right of the launcher ── */}
+      {/* ── Chat panel — opens above the launcher row ── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="panel"
-            initial={{ opacity: 0, scale: 0.94, x: -10 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.94, x: -10 }}
+            initial={{ opacity: 0, scale: 0.94, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 10 }}
             transition={{ type: 'spring', stiffness: 380, damping: 32 }}
             style={{ transformOrigin: 'bottom left' }}
             className="w-[min(340px,calc(100vw-88px))] sm:w-[384px]"
@@ -467,6 +417,56 @@ export default function ChatWidget() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Launcher row: FAB on left, pill on right ── */}
+      <div className="flex flex-row items-center gap-3">
+        <motion.button
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
+          onClick={() => setIsOpen(v => !v)}
+          aria-label={isOpen ? 'Close chat' : 'Open chat'}
+          aria-expanded={isOpen}
+          aria-haspopup="dialog"
+          className="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-[0_4px_18px_rgba(0,0,0,0.20)] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-shadow hover:shadow-[0_4px_22px_rgba(0,0,0,0.26)]"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isOpen ? (
+              <motion.span key="x"
+                initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.14 }}>
+                <X className="h-6 w-6" />
+              </motion.span>
+            ) : (
+              <motion.span key="msg"
+                initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.14 }}>
+                <MessageCircle className="h-6 w-6" />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
+
+        <AnimatePresence>
+          {!isOpen && (
+            <motion.button
+              initial={{ opacity: 0, x: -6, scale: 0.92 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -6, scale: 0.92 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+              onClick={() => setIsOpen(true)}
+              aria-label="Open chat"
+              className="flex items-center gap-2 bg-background text-foreground text-sm font-medium px-4 py-2.5 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.10)] border border-border/70 whitespace-nowrap hover:border-primary/40 hover:shadow-[0_4px_18px_rgba(0,0,0,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200"
+            >
+              <motion.span
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                className="h-2 w-2 rounded-full bg-emerald-400 shrink-0"
+              />
+              Chat with us
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
 
     </div>
   );

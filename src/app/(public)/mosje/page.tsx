@@ -11,7 +11,7 @@ export default function MosjePage() {
   return (
     <div className="bg-white py-12">
       <div className="container mx-auto max-w-4xl">
-        <div className="rounded-lg border border-gray-300 bg-white p-8 px-4 text-gray-800 shadow-lg md:p-12 md:px-10">
+        <div className="rounded-lg border border-gray-300 bg-white py-8 px-4 text-gray-800 shadow-lg md:py-12 md:px-10">
           <div className="flex flex-col items-center text-center">
             <Image
               src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"

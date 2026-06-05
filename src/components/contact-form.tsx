@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2, Send, User, Phone, Mail } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { sendContactEmail } from '@/app/(public)/contact-us/actions';
 import React from 'react';
 import { cn } from '@/lib/utils';
@@ -223,6 +224,16 @@ export default function ContactForm() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="default">Registered Trust No. 628 / 08</Badge>
+          <Badge variant="default">License No. RV-082 dated 02.05.2026</Badge>
+          <Badge variant="default">ISO 9001 : 2008 Certified</Badge>
+          <Badge variant="default">Social Audit Network - United Kingdom</Badge>
+          <Badge variant="default">
+            Donations IT Exempted U/S 80G — Approval No. AAATC9995Q25CH01/02 dated 10.03.2026
+          </Badge>
+        </div>
 
       </div>
     </div>

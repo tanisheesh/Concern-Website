@@ -138,10 +138,10 @@ We specialize in working with HR Departments in Organizations and assist them in
 
 ### Registration and Certifications
 - Registered Trust No. 628 / 08
-- IMH License No. RIV 135 dated 09.10.2025
+- License No. RV-082 dated 02.05.2026
 - ISO 9001:2008 Certified
 - Social Audit Network - United Kingdom
-- Donations are IT Exempted U/S 80G of IT Act 1961 Vide Approval No. AAATC9995QF20210 Dt. 24.09.2021
+- Donations are IT Exempted U/S 80G of IT Act 1961 Vide Approval No. AAATC9995Q25CH01/02 dated 10.03.2026
 
 ---
 

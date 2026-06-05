@@ -131,9 +131,9 @@ export default function AssessmentsPage() {
                 <div className="space-y-4">
                   {selfDiagnosisQuestions.map((question, index) => (
                      <div key={index} className="rounded-lg border bg-card text-card-foreground p-4 transition-shadow hover:shadow-md">
-                        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">{index + 1}</span>
-                            <p className="font-semibold text-sm md:text-base flex-grow">{question}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-start md:items-center gap-3 md:gap-4">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold mb-1 md:mb-0">{index + 1}</span>
+                            <p className="font-semibold text-sm md:text-base">{question}</p>
                              <RadioGroup
                                 onValueChange={(value) => handleSelfDiagnosisChange(index, value as 'yes' | 'no')}
                                 className="flex space-x-6"

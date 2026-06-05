@@ -89,7 +89,7 @@ export default function GalleryPage() {
             Programmes & Events
         </motion.h2>
         <motion.div 
-            className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 md:gap-6"
+            className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"

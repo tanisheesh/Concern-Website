@@ -74,6 +74,9 @@ type EditableContent = {
 
 const normaliseTag = (t: string) => t.replace(/^#/, '').toLowerCase().trim();
 
+const MANDATORY_HASHTAGS = ['concernrehab', 'mosje', 'nisd', 'nmba'];
+const MAX_HASHTAGS = 8;
+
 function syncHashtags(caption: string, tags: string[]): string {
   const stripped = caption.replace(/\n\n#[\s\S]*$/, '').trimEnd();
   if (!tags.length) return stripped;
@@ -184,7 +187,11 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
           setGenError(data.error ?? 'Generation failed. Please try again.');
           return;
         }
-        const tags    = data.instagram.hashtags.map(normaliseTag);
+        const aiTags  = data.instagram.hashtags.map(normaliseTag);
+        const tags    = [
+          ...MANDATORY_HASHTAGS,
+          ...aiTags.filter(t => !MANDATORY_HASHTAGS.includes(t)),
+        ].slice(0, MAX_HASHTAGS);
         const caption = data.instagram.caption.replace(/\n\n#[\s\S]*$/, '').trimEnd();
         setContent({
           instagram: { caption: syncHashtags(caption, tags), hashtags: tags },
@@ -206,7 +213,7 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
   // ---------------------------------------------------------------------------
 
   const removeHashtag = (tag: string, index: number) => {
-    if (index === 0) return; // first tag is always locked
+    if (index < MANDATORY_HASHTAGS.length) return; // mandatory tags are locked
     setContent(c => {
       if (!c) return c;
       const updated = c.instagram.hashtags.filter((_, i) => i !== index);
@@ -219,7 +226,7 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
     if (!tag) return;
     setContent(c => {
       if (!c) return c;
-      if (c.instagram.hashtags.length >= 5) return c;
+      if (c.instagram.hashtags.length >= MAX_HASHTAGS) return c;
       if (c.instagram.hashtags.includes(tag)) return c;
       const updated = [...c.instagram.hashtags, tag];
       return { ...c, instagram: { caption: syncHashtags(c.instagram.caption, updated), hashtags: updated } };
@@ -259,7 +266,7 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
     activeTab === 'linkedin'  ? 3000 :
     activeTab === 'whatsapp'  ? 500  : 63206;
   const activeText    = getContentText(activeTab);
-  const hashtagsFull  = (content?.instagram.hashtags.length ?? 0) >= 5;
+  const hashtagsFull  = (content?.instagram.hashtags.length ?? 0) >= MAX_HASHTAGS;
 
   // ---------------------------------------------------------------------------
   // Render
@@ -516,7 +523,7 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
                         <div className="flex items-center justify-between mb-2">
                           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Hashtags</p>
                           <span className="text-xs text-muted-foreground tabular-nums">
-                            {content.instagram.hashtags.length}<span className="opacity-50">/5</span>
+                            {content.instagram.hashtags.length}<span className="opacity-50">/{MAX_HASHTAGS}</span>
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
@@ -524,12 +531,12 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
                             <span key={tag}
                               className={cn(
                                 'inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium',
-                                i === 0
+                                i < MANDATORY_HASHTAGS.length
                                   ? 'bg-primary/10 text-primary border border-primary/20'
                                   : 'bg-secondary text-foreground',
                               )}>
                               #{tag}
-                              {i === 0 ? (
+                              {i < MANDATORY_HASHTAGS.length ? (
                                 <Lock className="h-2.5 w-2.5 ml-0.5 opacity-50" />
                               ) : (
                                 <button

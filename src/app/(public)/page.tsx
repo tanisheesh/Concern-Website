@@ -224,7 +224,7 @@ export default function Home() {
                 <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle className="text-center text-2xl font-bold text-primary uppercase tracking-wide">
-                      Concern – Daily Routine for Patients
+                      Concern – Daily Routine for Clients
                     </DialogTitle>
                   </DialogHeader>
                   <DailyRoutineTable />

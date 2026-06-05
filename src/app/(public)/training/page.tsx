@@ -2,7 +2,6 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -93,29 +92,6 @@ export default function TrainingPage() {
                 Kindly Visit <Link href="/gallery/training-programmes" className="underline text-accent-foreground hover:text-accent transition-colors">Gallery</Link> for all activities of training.
             </p>
         </div>
-
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-        >
-            <Card className="bg-secondary/50 shadow-md">
-            <CardHeader>
-                <CardTitle className="text-xl md:text-2xl text-primary">If We Can Help You, Please Contact Us.</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-muted-foreground">
-                <div className="flex flex-wrap gap-2">
-                <Badge variant="default">Registered Trust No. 628 / 08</Badge>
-                <Badge variant="default">IMH License No. RIV 135 dated 09.10.2025</Badge>
-                <Badge variant="default">ISO 9001 : 2008 Certified</Badge>
-                <Badge variant="default">Social Audit Network - United Kingdom</Badge>
-                </div>
-                <p className="pt-2 text-sm text-justify">
-                (Donations are IT Exempted U/S 80G of IT Act 1961 Vide Approval No. AAATC9995QF20210 Dt. 24.09.2021)
-                </p>
-            </CardContent>
-            </Card>
-        </motion.div>
       </div>
     </div>
   );
