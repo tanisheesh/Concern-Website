@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "extract-pdfs": "node --env-file=.env.local scripts/extract-pdfs.mjs"
   },
   "dependencies": {
     "@google-cloud/vision": "^5.3.6",

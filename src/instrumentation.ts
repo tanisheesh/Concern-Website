@@ -1,8 +1,3 @@
 export async function register() {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
-    import('./lib/drive-pdf-cache').then(({ preloadPDFCache, startRefreshLoop }) => {
-      preloadPDFCache();
-      startRefreshLoop(30);
-    });
-  }
+  // PDF data is pre-extracted at build time via: node --env-file=.env.local scripts/extract-pdfs.mjs
 }

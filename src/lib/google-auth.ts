@@ -10,7 +10,7 @@ export const auth = new google.auth.GoogleAuth({
 
 export const drive = google.drive({ version: 'v3', auth });
 
-export function withTimeout<T>(promise: Promise<T>, ms = 10_000): Promise<T> {
+export function withTimeout<T>(promise: Promise<T>, ms = 60_000): Promise<T> {
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>
