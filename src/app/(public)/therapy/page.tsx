@@ -1,7 +1,6 @@
 
 'use client';
 
-import { DailyRoutineTable } from '@/components/daily-routine-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
@@ -132,22 +131,6 @@ export default function TherapyPage() {
             </Card>
           </motion.div>
         ))}
-      </motion.div>
-
-      {/* Daily Routine Section */}
-      <motion.div
-        className="mt-16"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-primary md:text-3xl uppercase tracking-wide">
-            Concern – Daily Routine for Clients
-          </h2>
-        </div>
-
-        <DailyRoutineTable />
       </motion.div>
     </div>
   );

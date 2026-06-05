@@ -1,7 +1,7 @@
 
 'use client';
-import { DailyRoutineTable } from '@/components/daily-routine-table';
 import { WhereDoIStandPopup } from '@/components/where-do-i-stand-popup';
+import { DailyRoutineTable } from '@/components/daily-routine-table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -203,7 +203,7 @@ export default function Home() {
                 </Card>
               </motion.div>
             ))}
-            <motion.div variants={itemVariants} className="h-full">
+            <motion.div variants={itemVariants} className="h-full lg:col-start-2">
               <Dialog>
                 <DialogTrigger asChild>
                   <button
@@ -215,7 +215,7 @@ export default function Home() {
                       <div>
                         <p className="text-base font-bold text-primary">Daily Routine for our clients</p>
                         <p className="mt-1 text-sm font-semibold text-primary underline underline-offset-4 group-hover:no-underline">
-                          Click here
+                          Click Here
                         </p>
                       </div>
                     </div>
