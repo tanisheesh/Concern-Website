@@ -1,0 +1,15 @@
+diff --git a/node_modules/tailwindcss/lib/lib/content.js b/node_modules/tailwindcss/lib/lib/content.js
+index a2d5941..62a9bd8 100644
+--- a/node_modules/tailwindcss/lib/lib/content.js
++++ b/node_modules/tailwindcss/lib/lib/content.js
+@@ -233,7 +233,9 @@ function createBroadPatternCheck(paths) {
+     for (let file of files){
+         checkBroadPattern(file);
+         let prevModified = fileModifiedMap.get(file) || -Infinity;
+-        let modified = _fs.default.statSync(file).mtimeMs;
++        let stats = _fs.default.statSync(file, { throwIfNoEntry: false });
++        if (!stats) continue;
++        let modified = stats.mtimeMs;
+         if (modified > prevModified) {
+             changedFiles.add(file);
+             mTimesToCommit.set(file, modified);

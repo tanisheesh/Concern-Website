@@ -1,8 +1,17 @@
 
 'use client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { WhereDoIStandPopup } from '@/components/where-do-i-stand-popup';
+import { DailyRoutineTable } from '@/components/daily-routine-table';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CheckCircle } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { CheckCircle, MousePointerClick } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
@@ -51,6 +60,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
+      <WhereDoIStandPopup />
       {/* About Us & Vision/Mission Section */}
       <section className="py-8 md:py-12">
         <div className="container px-4 md:px-6">
@@ -65,10 +75,10 @@ export default function Home() {
                 About Us
               </h2>
               <p className="text-lg text-muted-foreground text-justify">
-                We are a Non-Governmental Organisation (NGO) working in the field of addiction - rehabilitation. We wish to share the benefits with other suffering men and women and their families. Members of <span className="font-semibold text-primary">CONCERN</span> have enormous experience in dealing with addiction at various levels with both men and women. Equipped with academic, professional and practical experience in the area of addiction treatment. We made it our Mission to Share our Very Personal Experience and Success. At <span className="font-semibold text-primary">CONCERN</span> we perceive the grip of addiction as a specific disorder and treat them in simple, medical and psychological method with Holistic Approach.
+                We are a Non-Profit Charitable Trust and Non-Governmental Organisation (NGO) working in the field of addiction - rehabilitation. We wish to share the benefits with other suffering men and women and their families. Members of <span className="font-semibold text-primary">CONCERN</span> have enormous experience in dealing with addiction at various levels with both men and women. Equipped with academic, professional and practical experience in the area of addiction treatment. We made it our Mission to Share our Very Personal Experience and Success. At <span className="font-semibold text-primary">CONCERN</span> we perceive the grip of addiction as a specific disorder and treat them in simple, medical and psychological method with Holistic Approach.
               </p>
               <p className="mt-4 text-lg text-muted-foreground text-justify">
-                <span className="font-semibold text-primary">Bhanu Suresh Babu</span> (Project Director) treats with a Dedicated Tailor Made Program to suit individuals' need and people of <span className="font-semibold text-primary">CONCERN</span> have practical experience with professional training and academics. We walk hand in hand with the clients exploring the problem areas and finding solutions to guide them in the process of recovery.
+                <span className="font-semibold text-primary">Bhanu Suresh Babu</span> (Founder President) treats with a Dedicated Tailor Made Program to suit individuals' need and people of <span className="font-semibold text-primary">CONCERN</span> have practical experience with professional training and academics. We walk hand in hand with the clients exploring the problem areas and finding solutions to guide them in the process of recovery.
               </p>
             </motion.div>
             <motion.div 
@@ -193,6 +203,34 @@ export default function Home() {
                 </Card>
               </motion.div>
             ))}
+            <motion.div variants={itemVariants} className="h-full lg:col-start-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    className="group flex h-full w-full flex-col rounded-lg border border-dashed border-primary bg-primary/5 p-6 text-left shadow-md transition-all hover:border-solid hover:bg-primary/10 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  >
+                    <div className="flex items-start">
+                      <MousePointerClick className="mr-4 mt-1 h-6 w-6 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
+                      <div>
+                        <p className="text-base font-bold text-primary">Daily Routine for our clients</p>
+                        <p className="mt-1 text-sm font-semibold text-primary underline underline-offset-4 group-hover:no-underline">
+                          Click Here
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-2xl font-bold text-primary uppercase tracking-wide">
+                      Concern – Daily Routine for Patients
+                    </DialogTitle>
+                  </DialogHeader>
+                  <DailyRoutineTable />
+                </DialogContent>
+              </Dialog>
+            </motion.div>
           </motion.div>
         </div>
       </section>

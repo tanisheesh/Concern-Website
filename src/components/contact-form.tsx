@@ -24,7 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2, Send, User, Phone, Mail } from 'lucide-react';
-import { sendContactEmail } from '@/app/contact-us/actions';
+import { sendContactEmail } from '@/app/(public)/contact-us/actions';
 import React from 'react';
 import { cn } from '@/lib/utils';
 

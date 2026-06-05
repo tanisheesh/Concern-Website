@@ -3,9 +3,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { Menu, Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -17,8 +17,10 @@ const navLinks = [
   { href: '/assessments', label: 'Assessments' },
   { href: '/therapy', label: 'Therapy' },
   { href: '/training', label: 'Training' },
-  { href: '/mosje', label: 'MoSJE', highlight: true },
+  { href: '/mosje', label: 'MoSJE' },
+  { href: 'http://136.185.19.20/', label: 'CCTV', external: true },
   { href: '/sanctuary', label: 'Sanctuary' },
+  { href: '/contact-us', label: 'Contact Us', green: true },
 ];
 
 export default function Navbar() {
@@ -30,29 +32,29 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden flex-1 items-center justify-center gap-x-8 lg:flex">
           <div className="flex items-center gap-x-4 text-sm font-medium">
-            {navLinks.map((link) => (
-               <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "px-3 py-2 rounded-md transition-colors",
-                  pathname === link.href
-                    ? "bg-secondary text-primary font-semibold"
-                    : link.highlight
-                    ? "text-accent-foreground bg-accent/90 hover:bg-accent font-semibold"
-                    : "text-muted-foreground hover:bg-secondary/50 hover:text-primary"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const className = cn(
+                "px-3 py-2 rounded-md transition-colors",
+                pathname === link.href
+                  ? "bg-secondary text-primary font-semibold"
+                  : link.green
+                  ? "text-primary-foreground bg-primary hover:bg-primary/90 font-semibold"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-primary"
+              );
+              if (link.external) {
+                return (
+                  <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className={className}>
+                    {link.label}
+                  </a>
+                );
+              }
+              return (
+                <Link key={link.href} href={link.href} className={className}>
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
-           <Button asChild className="ml-8 bg-accent text-accent-foreground hover:bg-accent/90">
-            <Link href="/contact-us">
-                <Send />
-                Contact Us
-            </Link>
-            </Button>
         </div>
 
         {/* Mobile Navigation */}
@@ -75,33 +77,34 @@ export default function Navbar() {
                 </SheetHeader>
                 <ScrollArea className="flex-grow">
                   <div className="flex flex-col gap-2 pr-4">
-                    {navLinks.map((link) => (
-                      <SheetClose asChild key={link.href}>
-                        <Link
-                          href={link.href}
-                          className={cn(
-                            "rounded-md px-4 py-3 text-base font-medium",
-                            pathname === link.href
-                              ? "bg-secondary text-primary"
-                              : link.highlight
-                              ? "text-accent-foreground bg-accent/90 hover:bg-accent"
-                              : "text-muted-foreground hover:bg-secondary/50"
-                          )}
-                        >
-                          {link.label}
-                        </Link>
-                      </SheetClose>
-                    ))}
+                    {navLinks.map((link) => {
+                      const className = cn(
+                        "rounded-md px-4 py-3 text-base font-medium",
+                        pathname === link.href
+                          ? "bg-secondary text-primary"
+                          : link.green
+                          ? "text-primary-foreground bg-primary hover:bg-primary/90"
+                          : "text-muted-foreground hover:bg-secondary/50"
+                      );
+                      if (link.external) {
+                        return (
+                          <SheetClose asChild key={link.href}>
+                            <a href={link.href} target="_blank" rel="noopener noreferrer" className={className}>
+                              {link.label}
+                            </a>
+                          </SheetClose>
+                        );
+                      }
+                      return (
+                        <SheetClose asChild key={link.href}>
+                          <Link href={link.href} className={className}>
+                            {link.label}
+                          </Link>
+                        </SheetClose>
+                      );
+                    })}
                   </div>
                 </ScrollArea>
-                 <SheetClose asChild>
-                    <Button asChild className="mt-4 bg-accent text-accent-foreground hover:bg-accent/90">
-                        <Link href="/contact-us">
-                            <Send />
-                            Contact Us
-                        </Link>
-                    </Button>
-                </SheetClose>
             </SheetContent>
           </Sheet>
         </div>
