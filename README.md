@@ -20,4 +20,29 @@ This repository contains the source code for the official website of **CONCERN**
 
 This repository is maintained to ensure **transparency and accessibility** of CONCERN’s digital presence.
 
+## Contributors
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/tanisheesh">
+        <img src="https://github.com/tanisheesh.png" width="80" alt="Tanish Poddar"/><br/>
+        <sub><b>Tanish Poddar</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Nishant-codess">
+        <img src="https://github.com/Nishant-codess.png" width="80" alt="Nishant Ranjan"/><br/>
+        <sub><b>Nishant Ranjan</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/nidhi-nayana">
+        <img src="https://github.com/nidhi-nayana.png" width="80" alt="Nidhi Nayana"/><br/>
+        <sub><b>Nidhi Nayana</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
 See the [LICENSE](LICENSE) file for usage restrictions.
