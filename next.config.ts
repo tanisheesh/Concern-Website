@@ -2,11 +2,9 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  
   // Security: Enable strict type checking in production
   typescript: {
-    ignoreBuildErrors: false, // Changed from true - fix all type errors
+    ignoreBuildErrors: false,
   },
   // Note: eslint config removed - not supported in Next.js 16
   // ESLint will run automatically during builds unless disabled via CLI

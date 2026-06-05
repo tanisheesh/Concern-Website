@@ -9,6 +9,7 @@ import ClientNavbar from '@/components/client-navbar';
 import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import BackToTop from '@/components/back-to-top';
+import ChatWidget from '@/components/chat-widget';
 
 export default function AppClientShell({
     children,
@@ -43,6 +44,7 @@ export default function AppClientShell({
             <Footer />
             <Toaster />
             <BackToTop />
+            <ChatWidget />
         </>
     );
 }
