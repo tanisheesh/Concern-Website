@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,7 @@ const navLinks = [
   { href: '/assessments', label: 'Assessments' },
   { href: '/therapy', label: 'Therapy' },
   { href: '/training', label: 'Training' },
-  { href: '/mosje', label: 'MoSJE' },
+  { href: '/mosje', label: 'MoSJE', emblem: true },
   { href: 'http://136.185.19.20/', label: 'CCTV', external: true },
   { href: '/sanctuary', label: 'Sanctuary' },
   { href: '/contact-us', label: 'Contact Us', green: true },
@@ -49,7 +50,16 @@ export default function Navbar() {
                 );
               }
               return (
-                <Link key={link.href} href={link.href} className={className}>
+                <Link key={link.href} href={link.href} className={cn(className, "inline-flex items-center gap-1.5")}>
+                  {link.emblem && (
+                    <Image
+                      src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
+                      alt="Emblem of India"
+                      width={16}
+                      height={24}
+                      className="h-4 w-auto"
+                    />
+                  )}
                   {link.label}
                 </Link>
               );
@@ -97,7 +107,16 @@ export default function Navbar() {
                       }
                       return (
                         <SheetClose asChild key={link.href}>
-                          <Link href={link.href} className={className}>
+                          <Link href={link.href} className={cn(className, "inline-flex items-center gap-2")}>
+                            {link.emblem && (
+                              <Image
+                                src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
+                                alt="Emblem of India"
+                                width={18}
+                                height={27}
+                                className="h-5 w-auto"
+                              />
+                            )}
                             {link.label}
                           </Link>
                         </SheetClose>
