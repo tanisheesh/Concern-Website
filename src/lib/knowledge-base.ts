@@ -216,9 +216,9 @@ CONCERN Sanctuary was formally opened on 22nd of March 2026 with the help of gra
 ### Technical Supporters
 1. Arch. Chamraj Suresh Babu, M.L.A. — Design Consultant
 2. Mr. Madhavan — Web Designer
-3. Mr. Tanish Poddar, B.Tech. — Web Developer
-4. Mr. Nishant Ranjan, B.Tech — Web Developer
-5. Ms. Nidhi Nayana, B.Tech — Web Developer
+3. Mr. Tanish Poddar, B.Tech. — Full-Stack Developer
+4. Mr. Nishant Ranjan, B.Tech — Full-Stack Developer
+5. Ms. Nidhi Nayana, B.Tech — Full-Stack Developer
 
 ### Committee of Supporters
 1. Ar. Kalpana. S. — Trustee, Zonta Resource Centre
@@ -230,6 +230,7 @@ CONCERN Sanctuary was formally opened on 22nd of March 2026 with the help of gra
 7. Dr. Benhur B.V.Sc. — Nutricon Bio-Science P Ltd
 8. Mr. Suresh Govindraj — Kothagiri, Nilgris District, Tamil Nadu
 9. Mrs. Pavithra Sharath — Idea Guru, Media Partner
+10. Mr. D. Arunagiri — Chennai
 
 ### Pillars of Strength
 1. Ministry of Social Justice and Empowerment (MoSJE) — Govt. Of India, New Delhi
@@ -240,6 +241,7 @@ CONCERN Sanctuary was formally opened on 22nd of March 2026 with the help of gra
 6. Link Up Garments for CSR Activities — Erungattukottai, Chennai
 7. Milestone Specialty Equipment P Ltd
 8. Vastarakala Export P Ltd — Thirumuluzhi, Chennai
+9. Karur Vysya Bank Ltd — Karur, Tamil Nadu
 
 ---
 

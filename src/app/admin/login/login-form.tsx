@@ -104,7 +104,7 @@ export default function LoginForm() {
         {/* Logo + title */}
         <div className="mb-8 flex flex-col items-center gap-3">
           <Image
-            src="/images/concern-logo.jpg"
+            src="/images/concern-logo.png"
             alt="CONCERN"
             width={180} height={46}
             className="w-44 object-contain drop-shadow-sm"

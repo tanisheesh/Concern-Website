@@ -8,7 +8,7 @@ import Header from '@/components/header';
 import ClientNavbar from '@/components/client-navbar';
 import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
-import BackToTop from '@/components/back-to-top';
+import AssessmentButton from '@/components/assessment-button';
 import ChatWidget from '@/components/chat-widget';
 
 export default function AppClientShell({
@@ -43,7 +43,7 @@ export default function AppClientShell({
             </main>
             <Footer />
             <Toaster />
-            <BackToTop />
+            <AssessmentButton />
             <ChatWidget />
         </>
     );

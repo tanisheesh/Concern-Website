@@ -197,19 +197,19 @@ export default function ChatWidget() {
   const canSend = input.trim().length > 0 && !isLoading;
 
   return (
-    <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-50 flex flex-col items-start gap-3">
+    <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-50">
 
-      {/* ── Chat panel — opens above the launcher row ── */}
+      {/* ── Chat panel — opens beside the launcher, anchored to its bottom edge ── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="panel"
-            initial={{ opacity: 0, scale: 0.94, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 10 }}
+            initial={{ opacity: 0, scale: 0.94, x: -10 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.94, x: -10 }}
             transition={{ type: 'spring', stiffness: 380, damping: 32 }}
             style={{ transformOrigin: 'bottom left' }}
-            className="w-[min(340px,calc(100vw-88px))] sm:w-[384px]"
+            className="absolute left-[68px] bottom-0 w-[min(340px,calc(100vw-140px))] sm:w-[384px]"
           >
             <div
               className="flex flex-col rounded-2xl overflow-hidden border border-border/60 bg-background shadow-[0_8px_40px_rgba(0,0,0,0.14),0_2px_8px_rgba(0,0,0,0.06)]"
@@ -429,21 +429,7 @@ export default function ChatWidget() {
           aria-haspopup="dialog"
           className="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-[0_4px_18px_rgba(0,0,0,0.20)] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-shadow hover:shadow-[0_4px_22px_rgba(0,0,0,0.26)]"
         >
-          <AnimatePresence mode="wait" initial={false}>
-            {isOpen ? (
-              <motion.span key="x"
-                initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.14 }}>
-                <X className="h-6 w-6" />
-              </motion.span>
-            ) : (
-              <motion.span key="msg"
-                initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.14 }}>
-                <MessageCircle className="h-6 w-6" />
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <MessageCircle className="h-6 w-6" />
         </motion.button>
 
         <AnimatePresence>

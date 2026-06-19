@@ -25,9 +25,9 @@ const managementStaff = [
 const technicalSupporters = [
   { name: 'Arch. Chamraj Suresh Babu, M.L.A.', role: 'Design Consultant' },
   { name: 'Mr. Madhavan', role: 'Web Designer' },
-  { name: 'Mr. Tanish Poddar, B.Tech.', role: 'Web Developer' },
-  { name: 'Mr. Nishant Ranjan, B.Tech', role: 'Web Developer' },
-  { name: 'Ms. Nidhi Nayana, B.Tech', role: 'Web Developer' },
+  { name: 'Mr. Tanish Poddar, B.Tech.', role: 'Full-Stack Developer' },
+  { name: 'Mr. Nishant Ranjan, B.Tech', role: 'Full-Stack Developer' },
+  { name: 'Ms. Nidhi Nayana, B.Tech', role: 'Full-Stack Developer' },
 ];
 
 const committeeOfSupporters = [
@@ -40,6 +40,7 @@ const committeeOfSupporters = [
     { name: 'Dr. Benhur B.V.Sc.', role: 'Nutricon Bio-Science P Ltd' },
     { name: 'Mr. Suresh Govindraj', role: 'Kothagiri, Nilgris District, Tamil Nadu' },
     { name: 'Mrs. Pavithra Sharath', role: 'Idea Guru, Media Partner' },
+    { name: 'Mr. D. Arunagiri', role: 'Chennai' },
 ];
 
 const pillarsOfStrength = [
@@ -51,6 +52,7 @@ const pillarsOfStrength = [
     { name: 'Link Up Garments for CSR Activities', role: 'Erungattukottai, Chennai' },
     { name: 'Milestone Specialty Equipment P Ltd', role: '' },
     { name: 'Vastarakala Export P Ltd', role: 'Thirumuluzhi, Chennai' },
+    { name: 'Karur Vysya Bank Ltd', role: 'Karur, Tamil Nadu' },
 ];
 
 const containerVariants = {

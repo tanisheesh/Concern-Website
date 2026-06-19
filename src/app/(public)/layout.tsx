@@ -2,7 +2,7 @@
  * Public website layout.
  *
  * Wraps all public-facing pages with the existing AppClientShell
- * (SplashScreen, Header, ClientNavbar, PageTransition, Footer, Toaster, BackToTop).
+ * (SplashScreen, Header, ClientNavbar, PageTransition, Footer, Toaster, AssessmentButton).
  *
  * This layout is applied to all routes inside the (public) route group.
  * The route group name "(public)" is invisible in URLs.

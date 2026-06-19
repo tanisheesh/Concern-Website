@@ -279,7 +279,7 @@ export default function Portal({ user }: { user: AdminSessionUser }) {
       <header className="sticky top-0 z-30 border-b border-border/60 bg-card/90 backdrop-blur-sm">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image src="/images/concern-logo.jpg" alt="CONCERN" width={120} height={30}
+            <Image src="/images/concern-logo.png" alt="CONCERN" width={120} height={30}
               className="w-28 object-contain" style={{ height: 'auto' }} priority />
             <span className="hidden sm:block text-xs font-medium text-muted-foreground border-l border-border/60 pl-3">
               Social Media Portal

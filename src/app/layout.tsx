@@ -9,7 +9,7 @@ const siteConfig = {
   title: 'CONCERN | Where You Discover Change',
   url: 'https://www.concernrehab.com',
   description: 'A Non-Governmental Organisation (NGO) working in the field of addiction treatment and rehabilitation. We offer detoxification, psychotherapy, counseling, and community awareness programs.',
-  logo: '/images/concern-logo.jpg',
+  logo: '/images/concern-logo.png',
   keywords: "rehabilitation center, addiction treatment, NGO, de-addiction, substance abuse, Chennai",
 };
 
