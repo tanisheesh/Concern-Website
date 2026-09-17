@@ -9,8 +9,11 @@ const nextConfig: NextConfig = {
   // Note: eslint config removed - not supported in Next.js 16
   // ESLint will run automatically during builds unless disabled via CLI
 
-  // Native Node.js addons that must not be bundled by Turbopack/webpack
-  serverExternalPackages: ['firebase-admin'],
+  // Bundling firebase-admin (rather than leaving it external) lets Turbopack
+  // handle the CJS/ESM interop for its jose dependency correctly — as an
+  // external, Turbopack's externalImport bridge throws ERR_REQUIRE_ESM
+  // trying to load jwks-rsa's synchronous require('jose') at runtime.
+  serverExternalPackages: [],
 
   // Security Headers
   async headers() {
