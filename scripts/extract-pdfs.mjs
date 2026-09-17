@@ -18,10 +18,25 @@ const OUTPUT_PATH = resolve(__dirname, '../src/data/pdf-data.json');
 
 // --- Google Auth ---
 
+// Secrets are sometimes pasted with a surrounding pair of quotes (e.g. from
+// a .env-style "KEY=\"value\"" line copied whole into a CI secret), which
+// breaks PEM parsing since OpenSSL requires the key to start exactly with
+// "-----BEGIN PRIVATE KEY-----". Strip those defensively, then unescape
+// literal "\n" sequences into real newlines.
+function normalisePrivateKey(raw) {
+  const trimmed = (raw ?? '').trim();
+  const unquoted = trimmed.startsWith('"') && trimmed.endsWith('"')
+    ? trimmed.slice(1, -1)
+    : trimmed;
+  return unquoted.replace(/\\n/g, '\n');
+}
+
+const PRIVATE_KEY = normalisePrivateKey(process.env.GOOGLE_PRIVATE_KEY);
+
 const auth = new google.auth.GoogleAuth({
   credentials: {
     client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    private_key: PRIVATE_KEY,
   },
   scopes: ['https://www.googleapis.com/auth/drive.readonly'],
 });
@@ -36,7 +51,7 @@ function getVisionClient() {
     visionClient = new ImageAnnotatorClient({
       credentials: {
         client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        private_key: PRIVATE_KEY,
       },
     });
   }

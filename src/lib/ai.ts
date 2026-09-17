@@ -28,7 +28,9 @@ export interface GeneratedPlatformContent {
 // ---------------------------------------------------------------------------
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL        = 'llama-3.3-70b-versatile';
+// llama-3.3-70b-versatile was retired from Groq's catalog; gpt-oss-120b is
+// the current best equivalent (open-weight, strong JSON-mode support).
+const MODEL         = 'openai/gpt-oss-120b';
 
 const SYSTEM_PROMPT = `You are a social media content assistant exclusively for CONCERN, a Chennai-based NGO specialising in addiction rehabilitation and community welfare. Your only purpose is to generate social media captions, posts, and messages for CONCERN's events, programs, and activities.
 
@@ -140,7 +142,10 @@ export async function generateContent(
           { role: 'user',   content: buildUserPrompt(input) },
         ],
         temperature:     0.72,
-        max_tokens:      1024,
+        // gpt-oss is a reasoning model: it spends tokens on hidden reasoning
+        // before the JSON output, so this needs more headroom than a plain
+        // completion model would.
+        max_tokens:      3072,
         response_format: { type: 'json_object' },
       }),
     });
