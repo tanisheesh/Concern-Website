@@ -64,14 +64,17 @@ ${pdfSection}`;
 
   try {
     const stream = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      // llama-3.3-70b-versatile was retired from Groq's catalog.
+      model: 'openai/gpt-oss-120b',
       messages: [
         { role: 'system', content: systemPrompt },
         ...safeHistory,
         { role: 'user', content: message.trim() },
       ],
       stream: true,
-      max_tokens: 1024,
+      // gpt-oss spends tokens on hidden reasoning before its reply, so this
+      // needs more headroom than a plain completion model would.
+      max_tokens: 2048,
       temperature: 0.3,
     });
 
