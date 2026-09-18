@@ -143,9 +143,13 @@ export async function generateContent(
         ],
         temperature:     0.72,
         // gpt-oss is a reasoning model: it spends tokens on hidden reasoning
-        // before the JSON output, so this needs more headroom than a plain
-        // completion model would.
-        max_tokens:      3072,
+        // before the JSON output. With the strict per-platform character
+        // limits in this prompt it was burning its entire token budget
+        // manually recounting characters and never reaching the actual
+        // output (finish_reason "length", empty content). Capping reasoning
+        // effort keeps it fast and reliably leaves room for the real answer.
+        max_tokens:       3072,
+        reasoning_effort: 'low',
         response_format: { type: 'json_object' },
       }),
     });
