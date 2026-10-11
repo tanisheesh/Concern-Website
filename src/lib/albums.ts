@@ -9,6 +9,7 @@ export const ALBUM_TITLES: Record<string, string> = {
   'awareness-programmes': 'Awareness Programmes',
   'award-recognitions': 'Awards & Recognitions',
   'sanctuary': 'Sanctuary',
+  'staff-activities': 'Staff Activities',
 };
 
 export function slugToTitle(slug: string): string {
@@ -22,6 +23,7 @@ export const PROGRAMME_ALBUMS: Album[] = [
   { slug: 'concern-premises', title: 'Concern Premises' },
   { slug: 'awareness-programmes', title: 'Awareness Programmes' },
   { slug: 'award-recognitions', title: 'Awards & Recognitions' },
+  { slug: 'staff-activities', title: 'Staff Activities' },
 ];
 
 export const SPECIAL_ALBUMS: Album[] = [
